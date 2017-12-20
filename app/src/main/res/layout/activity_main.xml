@@ -10,17 +10,5 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.anita.renksayi_1.MainActivity">
 
-    <GridView
-        android:id="@+id/gridview1"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:columnWidth="100dp"
-        android:numColumns="auto_fit"
-        android:verticalSpacing="24dp"
-        android:horizontalSpacing="10dp"
-        android:stretchMode="spacingWidthUniform"
-        />
-
 
 </RelativeLayout>
