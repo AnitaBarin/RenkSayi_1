@@ -17,13 +17,13 @@ public class updateTipAdapter extends  ArrayAdapter<String>{
 
 private final Activity context;
 private final String[] web;
-private final Integer[] imageId;
+//private final Integer[] imageId;
 public updateTipAdapter(Activity context,
                         String[] web, Integer[] imageId) {
         super(context, R.layout.update_gelir_gider, web);
         this.context = context;
         this.web = web;
-        this.imageId = imageId;
+        //this.imageId = imageId;
 
         }
 @Override
@@ -38,8 +38,10 @@ public View getView(int position, View view, ViewGroup parent) {
         int screenWidth = textVD.getScreenWidth(context);
         //imageView.setMaxWidth(screenWidth/20);
        // imageView.setMaxHeight(screenWidth/20);
-        txtTitle.setMaxWidth(screenHeight/20);
-        txtTitle.setMaxHeight(screenHeight/5);
+       // txtTitle.setMaxWidth(screenHeight/20);
+        //txtTitle.setMaxHeight(screenHeight/5);
+    txtTitle.setMaxWidth(screenHeight/50);
+    txtTitle.setHeight(screenHeight/16);
         int fortextVWidth = ((screenWidth * 9 / 10) / 4);
         int sabitSize = (int) Math.floor(fortextVWidth/ 250);
         int fortextSize = 12 + (sabitSize * 4);
@@ -47,8 +49,8 @@ public View getView(int position, View view, ViewGroup parent) {
 
 
         txtTitle.setText(web[position]);
-    txtTitle.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
-    txtTitle.setTextSize(fortextSize*2);
+    //txtTitle.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+    txtTitle.setTextSize(fortextSize*3/4);
        // imageView.setImageResource(imageId[position]);
         return rowView;
         }

@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">RenkSayi_1</string>
+    <string name="title_activity_zorluk_secim">ZorlukSecim</string>
+    <string name="title_activity_tip_secim">TipSecim</string>
 </resources>

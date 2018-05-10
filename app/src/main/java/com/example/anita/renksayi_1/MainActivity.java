@@ -1,5 +1,6 @@
 package com.example.anita.renksayi_1;
 
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -26,7 +27,9 @@ import static android.R.id.button1;
 
 public class MainActivity extends AppCompatActivity {
 
-    GridView gridviewBeginner;
+    private static final int REQUEST_USER = 100;
+    public String intentDonus;
+    GridView gridviewBeginner, gridviewTip,gridviewZorluk;
     LinearLayout linearLayoutBase,linearLayoutForGrid, linearLayoutRandomSayi, linearLayoutWrongCountText,linearLayoutRightCountText;
     RelativeLayout.LayoutParams baseLayoutParams;
     LinearLayout.LayoutParams linearLayoutForGridParams,linearLayoutRandomSayiParams, textRandomParams,linearLayoutRightWrongParams,RightWrongTextImageParams;
@@ -34,11 +37,18 @@ public class MainActivity extends AppCompatActivity {
     int screenWidth, screenHeight;
     int minSayi=1;
     int maxSayi=4;
-    int randomSayi;
+    int randomSayi,beklenenYanlisAdet;
     int rightCount=0;
     int wrongCount=0;
     int gridLeft, gridHeight,gridWidth,boxLeft,boxHeight,boxWidth,betweenTwo;
     Integer[] imageRandomSayi={R.drawable.button_base};
+    Integer[] imageTipleri;//={R.drawable.lineer,R.drawable.terslineer,R.drawable.diagonal,R.drawable.maxihelix,R.drawable.midihelix,R.drawable.minihelix};
+    String[]  tipler;
+    String[]  zorlukSayi;
+    String[] sayilar;
+    String secilenTip,zorlukDeger;
+
+
     TextView textViewRandom, textViewWrongText,textViewWrongCount,textViewRightText,textViewRightCount;
     ImageView imageViewWrong,imageViewRight;
 
@@ -52,6 +62,8 @@ public class MainActivity extends AppCompatActivity {
         randomSayi = getRandomSayi(minSayi, maxSayi);
 
 
+
+        ////////--------------------------genel base layout  tanımlama----------------------
         ///layout tanımlama
         linearLayoutBase = new LinearLayout(this);
         linearLayoutForGrid = new LinearLayout(this);
@@ -60,16 +72,168 @@ public class MainActivity extends AppCompatActivity {
         linearLayoutRightCountText = new LinearLayout(this);
         linearLayoutWrongCountText = new LinearLayout(this);
 
-
         baseLayoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         linearLayoutBase.setLayoutParams(baseLayoutParams);
         addContentView(linearLayoutBase, baseLayoutParams);
 
-
+        /////////----------dimension alma-----------------------
         ////ekran için dimension alma
         dimens textVD = new dimens();
         screenHeight = textVD.getScreenHeight(this);
         screenWidth = textVD.getScreenWidth(this);
+
+
+        ///////////--------------oyunlar için tip seçimi fonksiyonu çağırma------------------
+        tipAlma();
+
+    }
+
+
+
+    ///////////----------------------adapter bölümü-----------------------------
+
+    ////////oyun tipi seçimi adapter
+    private void adaptForGridTip(GridView gridviewTipim, String[] tiplerim, Integer[] imageTiplerim) {
+        tipSecimiAdapter adapter = new
+                tipSecimiAdapter(MainActivity.this, tiplerim, imageTiplerim);
+        // listViewUpdate = new ListView(this);
+        gridviewTipim.setAdapter(adapter);
+    }
+
+
+    //////oyunu açan adapter çağırma
+    public void adaptForGrid(GridView gridViewUpdatealttip, String[] sayiTipleri, Integer[] randomSayiImages) {
+        updateTipAdapter adapter = new
+                updateTipAdapter(MainActivity.this, sayiTipleri, randomSayiImages);
+        // listViewUpdate = new ListView(this);
+        gridViewUpdatealttip.setAdapter(adapter);
+    }
+
+
+    /////////////----------------------oyun mod  sayı üretimi----------------------
+    //////mod4 için random sayı üretme
+    private int getRandomSayi(int minSayiG,int maxSayiG){
+        int randomSayiG;
+        Random random=new Random();
+        randomSayiG = random.nextInt(maxSayiG-minSayiG+1)+minSayiG;
+        return randomSayiG;
+    }
+
+    ///////------------------------intentlerin çağrılması------------------------------
+    ////////intent çağırma
+
+    //////Tip alma için intent çalıştırma
+    private void tipAlma(){
+        //String gidenDeger;
+        //gidenDeger=String.valueOf(positionZorluk);
+        Intent intentTipAl = new Intent(this, TipSecim.class);
+        //intentZorlukAl.putExtra("giden", gidenDeger);
+        intentDonus="tip";
+        intentTipAl.putExtra("intentTipi",intentDonus);
+        startActivityForResult(intentTipAl, REQUEST_USER);
+
+    }
+
+    //////zorluk alma için intent çalıştırma
+    private void zorlukAlma(int positionZorluk){
+        String gidenDeger;
+        gidenDeger=String.valueOf(positionZorluk);
+        Intent intentZorlukAl = new Intent(this, ZorlukSecim.class);
+        intentZorlukAl.putExtra("giden", gidenDeger);
+        intentDonus="zorluk";
+        intentZorlukAl.putExtra("intentTipi",intentDonus);
+        startActivityForResult(intentZorlukAl, REQUEST_USER);
+
+    }
+
+
+
+    ///////--------------------------intentlerin dönüşleri-------------------------------------
+    /////////////intent dönüşleri için
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_USER) {
+            if (resultCode == RESULT_OK) {
+                intentDonus = data.getStringExtra("tipDonus");
+
+            }
+        }
+
+        //////////////Tip seçimi için intent
+        if(intentDonus.equals("TipSecim")){
+            Integer tipImage []=(Integer[]) data.getSerializableExtra("tipResim");
+            String tipAdi []=(String []) data.getSerializableExtra("tipAd");
+
+            ///////tip seçimi için grid tanımlama
+            gridviewTip = new GridView(this);
+            gridviewTip.setNumColumns(3);
+
+            //////tip gridi için adapter çağırma
+            adaptForGridTip(gridviewTip, tipAdi, tipImage);
+
+            ///// tip gridinin ekrana eklenmesi
+            LinearLayout.LayoutParams listParamsTip = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            linearLayoutBase.addView(gridviewTip, listParamsTip);
+
+            //////////////////tip seçimi için clicklistener
+            gridviewTip.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    int updatePosition1 = (int) id+1;
+                    secilenTip=String.valueOf(position);
+                    String textToast = "İşaretlediğiniz " + position + "  numaralı satırdaki   gösterilecektir";
+                    Toast toast = Toast.makeText(getApplicationContext(), textToast, Toast.LENGTH_SHORT);
+                    toast.show();
+                    /////////Zorluk alma için intent çalıştırmaya gidiş
+                    ///////tip 0,1,2,3   ise zorluk seçimi yapılır, tip 4,5 ise zorluk direkt 5tir
+                    if (position>3){
+                        zorlukDeger="5";
+                    }
+                    if (position<4){
+                        zorlukAlma(position);
+                    }
+
+                }
+            });
+        }
+
+
+
+        ////////////zorluk seçimi için intent
+        if (intentDonus.equals("ZorlukSecim")) {
+           Integer zorlukImage[]= (Integer[]) data.getSerializableExtra("zorluklar");
+            String zorlukSayi []={"","","","","",""};
+            ///////tip seçimi için grid tanımlama
+            gridviewZorluk = new GridView(this);
+            gridviewZorluk.setNumColumns(3);
+
+            ///////Zorluk seçimi için adapter çağırma
+            adaptForGridTip(gridviewZorluk, zorlukSayi, zorlukImage);
+
+            /////zorluk gridinin ekrana eklenmesi
+            LinearLayout.LayoutParams listParamsTip = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            linearLayoutBase.removeAllViewsInLayout();
+            linearLayoutBase.addView(gridviewZorluk, listParamsTip);
+            /////////zorluk gridi için clicklistener
+
+        gridviewZorluk.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                int updatePosition1 = (int) id+1;
+                zorlukDeger=String.valueOf(position);
+                String textToast = "Seçtiğiniz tip -" + secilenTip+"- seçtiğiniz zorluk ise -" + zorlukDeger + "- olmuştur.";
+                Toast toast = Toast.makeText(getApplicationContext(), textToast, Toast.LENGTH_LONG);
+                toast.show();
+                oyunGridYap(secilenTip,zorlukDeger);
+
+            }
+        });
+        }
+    }
+
+
+    public void oyunGridYap(String secilmisTip,String secilenZorluk){
 
         ///grid ve kutu için size tanımlama
         gridLeft = screenWidth / 20;
@@ -86,6 +250,7 @@ public class MainActivity extends AppCompatActivity {
         linearLayoutForGrid.setOrientation(LinearLayout.HORIZONTAL);
         linearLayoutForGridParams.leftMargin = gridLeft;
         linearLayoutForGrid.setId(1);
+        linearLayoutBase.removeAllViewsInLayout();
         linearLayoutBase.addView(linearLayoutForGrid, linearLayoutForGridParams);
 
         ///randomsayının gösterimi için alt ekran ve parametre
@@ -155,11 +320,18 @@ public class MainActivity extends AppCompatActivity {
 
 
         ////grid için satır ve sütün sayısı tanımlama
-        beginnerColumnNum = 4;
-        beginnerRowNum = 4;
+        beginnerColumnNum = 12;
+        beginnerRowNum = 12;
 
+
+
+
+
+        /////-----------------------------------------------------
         ///////gridi dolduracak verilerin tanımlanması
-        final String[] sayilar = {"1", "2", "3", "4", "8", "7", "6", "5", "9", "10", "11", "12", "16", "15", "14", "13"};
+        final String[] sayilar = {"1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49","50","51","52","53","54","55","56","57","58","59","60","61","62","63","64","65","66","67","68","69","70","71","72","73","74","75","76","77","78","79","80","81","82","83","84","85","86","87","88","89","90","91","92","93","94","95","96","97","98","99","100","101","102","103","104","105","106","107","108","109","110","111","112","113","114","115","116","117","118","119","120","121","122","123","124","125","126","127","128","129","130","131","132","133","134","135","136","137","138","139","140","141","142","143","144"};
+
+                //////{"1", "2", "3", "4", "8", "7", "6", "5", "9", "10", "11", "12", "16", "15", "14", "13"};
 
 
         ////grid tanımlama, grid parametre tanımlama
@@ -172,9 +344,11 @@ public class MainActivity extends AppCompatActivity {
 
 
         ///// gridi ekrana eklenmesi
+
         linearLayoutForGrid.addView(gridviewBeginner, listParams);
 
-        /////grid için clicklistener eklenmesi
+        /////oyun gridi için clicklistener eklenmesi
+        /////oyun gridi için clicklistener eklenmesi
         gridviewBeginner.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -187,7 +361,7 @@ public class MainActivity extends AppCompatActivity {
 
                 String textToast = "İşaretlediğiniz " + position + "  numaralı satırdaki  " + modum + " kayıt güncelleme için" + randomSayi + " gösterilecektir";
                 Toast toast = Toast.makeText(getApplicationContext(), textToast, Toast.LENGTH_LONG);
-                toast.show();
+                //toast.show();
                 if(modum==randomSayi){
                     rightCount=rightCount+1;
                 }
@@ -205,23 +379,5 @@ public class MainActivity extends AppCompatActivity {
 
         });
     }
-
-
-    //////adapter çağırma
-    public void adaptForGrid(GridView gridViewUpdatealttip, String[] sayiTipleri, Integer[] randomSayiImages) {
-        updateTipAdapter adapter = new
-                updateTipAdapter(MainActivity.this, sayiTipleri, randomSayiImages);
-        // listViewUpdate = new ListView(this);
-        gridViewUpdatealttip.setAdapter(adapter);
-    }
-
-    //////mod4 için random sayı üretme
-    private int getRandomSayi(int minSayiG,int maxSayiG){
-        int randomSayiG;
-        Random random=new Random();
-        randomSayiG = random.nextInt(maxSayiG-minSayiG+1)+minSayiG;
-        return randomSayiG;
-    }
-
 
 }
