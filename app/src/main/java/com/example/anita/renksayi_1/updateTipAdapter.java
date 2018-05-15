@@ -40,8 +40,9 @@ public View getView(int position, View view, ViewGroup parent) {
        // imageView.setMaxHeight(screenWidth/20);
        // txtTitle.setMaxWidth(screenHeight/20);
         //txtTitle.setMaxHeight(screenHeight/5);
-    txtTitle.setMaxWidth(screenHeight/50);
-    txtTitle.setHeight(screenHeight/16);
+    //txtTitle.setMaxWidth(screenHeight/50);
+    txtTitle.setWidth(screenHeight/14);
+    txtTitle.setHeight(screenHeight/14);
         int fortextVWidth = ((screenWidth * 9 / 10) / 4);
         int sabitSize = (int) Math.floor(fortextVWidth/ 250);
         int fortextSize = 12 + (sabitSize * 4);

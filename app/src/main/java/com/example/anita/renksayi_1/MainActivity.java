@@ -30,9 +30,9 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_USER = 100;
     public String intentDonus;
     GridView gridviewBeginner, gridviewTip,gridviewZorluk;
-    LinearLayout linearLayoutBase,linearLayoutForGrid, linearLayoutRandomSayi, linearLayoutWrongCountText,linearLayoutRightCountText;
+    LinearLayout linearLayoutBase,linearLayoutForGrid, linearLayoutForGridAlt, linearLayoutRandomSayi, linearLayoutWrongCountText,linearLayoutRightCountText;
     RelativeLayout.LayoutParams baseLayoutParams;
-    LinearLayout.LayoutParams linearLayoutForGridParams,linearLayoutRandomSayiParams, textRandomParams,linearLayoutRightWrongParams,RightWrongTextImageParams;
+    LinearLayout.LayoutParams linearLayoutForGridParams,linearLayoutForGridAltParams,linearLayoutRandomSayiParams, textRandomParams,linearLayoutRightWrongParams,RightWrongTextImageParams;
     int beginnerColumnNum, beginnerRowNum;
     int screenWidth, screenHeight;
     int minSayi=1;
@@ -67,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
         ///layout tanımlama
         linearLayoutBase = new LinearLayout(this);
         linearLayoutForGrid = new LinearLayout(this);
+        linearLayoutForGridAlt=new LinearLayout(this);
         linearLayoutRandomSayi = new LinearLayout(this);
         linearLayoutRandomSayi.setOrientation(LinearLayout.VERTICAL);
         linearLayoutRightCountText = new LinearLayout(this);
@@ -237,7 +238,7 @@ public class MainActivity extends AppCompatActivity {
 
         ///grid ve kutu için size tanımlama
         gridLeft = screenWidth / 20;
-        gridHeight = (screenHeight / 10) * 9;
+        gridHeight = (screenHeight / 100) * 100;
         gridWidth = gridHeight;
         boxLeft = 0;
         boxHeight = (screenHeight / 10) * 6;
@@ -338,6 +339,7 @@ public class MainActivity extends AppCompatActivity {
         gridviewBeginner = new GridView(this);
         gridviewBeginner.setNumColumns(beginnerColumnNum);
         LinearLayout.LayoutParams listParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        listParams.topMargin=screenHeight/15;
 
         //////grid için adapter çalıştırma
         adaptForGrid(gridviewBeginner, sayilar, imageRandomSayi);
