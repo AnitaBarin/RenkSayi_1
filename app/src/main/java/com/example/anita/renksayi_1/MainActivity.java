@@ -1,9 +1,12 @@
 package com.example.anita.renksayi_1;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.media.MediaPlayer;
+import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -47,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
     String[]  zorlukSayi;
     String[] sayilar;
     String secilenTip,zorlukDeger;
+    private MediaPlayer mPlayerKir= new MediaPlayer();
 
 
     TextView textViewRandom, textViewWrongText,textViewWrongCount,textViewRightText,textViewRightCount;
@@ -58,6 +62,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
+
 
         randomSayi = getRandomSayi(minSayi, maxSayi);
 
@@ -236,6 +242,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void oyunGridYap(String secilmisTip,String secilenZorluk){
 
+       final  Vibrator vibe = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
+
         ///grid ve kutu için size tanımlama
         gridLeft = screenWidth / 20;
         gridHeight = (screenHeight / 100) * 100;
@@ -354,6 +362,10 @@ public class MainActivity extends AppCompatActivity {
         gridviewBeginner.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+
+
+
                 int updatePosition = (int) id;
 
                 int sayim = Integer.valueOf(sayilar[updatePosition]);
@@ -366,9 +378,23 @@ public class MainActivity extends AppCompatActivity {
                 //toast.show();
                 if(modum==randomSayi){
                     rightCount=rightCount+1;
+                    ///////vibration efekti
+                    vibe.vibrate(50);
+                    //////ses efekti
+                    mPlayerKir=MediaPlayer.create(MainActivity.this,R.raw.right);
+                    mPlayerKir.start();
+                    view.setBackgroundColor(Color.GREEN);
                 }
                 else if (randomSayi != modum)
                 {wrongCount=wrongCount+1;
+                    ///////vibration efekti
+                    vibe.vibrate(200);
+                    //////ses efekti
+                    mPlayerKir=MediaPlayer.create(MainActivity.this,R.raw.wrong);
+                    mPlayerKir.start();
+
+
+                    view.setBackgroundColor(Color.RED);
                 };
                 textViewRightCount.setText(String.valueOf(rightCount));
                 textViewWrongCount.setText(String.valueOf(wrongCount));
