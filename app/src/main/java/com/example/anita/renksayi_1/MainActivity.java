@@ -25,6 +25,7 @@ import android.widget.Toast;
 import java.util.Random;
 
 import static android.R.attr.max;
+import static android.R.attr.theme;
 import static android.R.attr.wallpaperCloseEnterAnimation;
 import static android.R.id.button1;
 
@@ -50,6 +51,8 @@ public class MainActivity extends AppCompatActivity {
     String[]  zorlukSayi;
     String[] sayilar;
     String secilenTip,zorlukDeger;
+    String  oyunlarAdim,zorlukAdim,tipZorlukm;
+    String myPlace="";
     private MediaPlayer mPlayerKir= new MediaPlayer();
 
 
@@ -133,6 +136,7 @@ public class MainActivity extends AppCompatActivity {
     private void tipAlma(){
         //String gidenDeger;
         //gidenDeger=String.valueOf(positionZorluk);
+        myPlace="Tip";
         Intent intentTipAl = new Intent(this, TipSecim.class);
         //intentZorlukAl.putExtra("giden", gidenDeger);
         intentDonus="tip";
@@ -143,6 +147,7 @@ public class MainActivity extends AppCompatActivity {
 
     //////zorluk alma için intent çalıştırma
     private void zorlukAlma(int positionZorluk){
+        myPlace="Zorluk";
         String gidenDeger;
         gidenDeger=String.valueOf(positionZorluk);
         Intent intentZorlukAl = new Intent(this, ZorlukSecim.class);
@@ -195,7 +200,8 @@ public class MainActivity extends AppCompatActivity {
                     /////////Zorluk alma için intent çalıştırmaya gidiş
                     ///////tip 0,1,2,3   ise zorluk seçimi yapılır, tip 4,5 ise zorluk direkt 5tir
                     if (position>3){
-                        zorlukDeger="5";
+                        zorlukDeger=null;
+                        oyunGridYap(secilenTip,zorlukDeger);
                     }
                     if (position<4){
                         zorlukAlma(position);
@@ -243,6 +249,7 @@ public class MainActivity extends AppCompatActivity {
     public void oyunGridYap(String secilmisTip,String secilenZorluk){
 
        final  Vibrator vibe = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
+        myPlace="Oyun";
 
         ///grid ve kutu için size tanımlama
         gridLeft = screenWidth / 20;
@@ -337,12 +344,37 @@ public class MainActivity extends AppCompatActivity {
 
 
         /////-----------------------------------------------------
-        ///////gridi dolduracak verilerin tanımlanması
-        final String[] sayilar = {"1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49","50","51","52","53","54","55","56","57","58","59","60","61","62","63","64","65","66","67","68","69","70","71","72","73","74","75","76","77","78","79","80","81","82","83","84","85","86","87","88","89","90","91","92","93","94","95","96","97","98","99","100","101","102","103","104","105","106","107","108","109","110","111","112","113","114","115","116","117","118","119","120","121","122","123","124","125","126","127","128","129","130","131","132","133","134","135","136","137","138","139","140","141","142","143","144"};
+        ///////---------------------gridi dolduracak verilerin tanımlanması--------------------------
 
-                //////{"1", "2", "3", "4", "8", "7", "6", "5", "9", "10", "11", "12", "16", "15", "14", "13"};
+        String oyunum,sayim;
+        //////////oyun adları ve zorluklar için res/arrays verilerini alma
+        String [] oyunlarAdi=this.getResources().getStringArray(R.array.tipler);
+        String [] zorlukAdi=this.getResources().getStringArray(R.array.zorluk);
+        String []  tipZorluk=this.getResources().getStringArray(R.array.TumTipZorluk);
+
+        /////////seçilen oyun tipine göre Arrayden oyunun adını bulma
+        oyunlarAdim=oyunlarAdi[Integer.valueOf(secilenTip)];
+
+        ///////mini ve midi helix için sadece zorluk 6 var, bu nedenle sadece ad ile verileri var. diğerleri için zorluk değeri ile ismi birleştirme
+        if(oyunlarAdim.equals("MiniHelix")){
+            tipZorlukm=oyunlarAdim;
+        }
+        else if (oyunlarAdim.equals("MidiHelix")){
+            tipZorlukm=oyunlarAdim;
+        }
+        else {
+            zorlukAdim=zorlukAdi[Integer.valueOf(secilenZorluk)];
+        tipZorlukm=oyunlarAdim+zorlukAdim;}
 
 
+        //////////// oyuntip ve zorluk birleşince oluşan isim ile res/arrays verilerinden seçilen oyun için geçerli olan verileri bulma
+        oyunum=tipZorlukm;
+            int arryid = this.getResources().getIdentifier(oyunum, "array",
+                    this.getPackageName());
+        final String[] sayilar  = this.getResources().getStringArray(arryid);
+
+
+    //////////////------------------------------------oyun gridi---------------------------------
         ////grid tanımlama, grid parametre tanımlama
         gridviewBeginner = new GridView(this);
         gridviewBeginner.setNumColumns(beginnerColumnNum);
@@ -354,28 +386,26 @@ public class MainActivity extends AppCompatActivity {
 
 
         ///// gridi ekrana eklenmesi
-
         linearLayoutForGrid.addView(gridviewBeginner, listParams);
 
-        /////oyun gridi için clicklistener eklenmesi
+
+
+
+        /////---------------------oyun gridi için clicklistener eklenmesi-------------------
         /////oyun gridi için clicklistener eklenmesi
         gridviewBeginner.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-
-
-
                 int updatePosition = (int) id;
-
                 int sayim = Integer.valueOf(sayilar[updatePosition]);
 
                 sayiModuBul mod = new sayiModuBul(sayim);
                 int modum = mod.getSayiMod();
 
-                String textToast = "İşaretlediğiniz " + position + "  numaralı satırdaki  " + modum + " kayıt güncelleme için" + randomSayi + " gösterilecektir";
-                Toast toast = Toast.makeText(getApplicationContext(), textToast, Toast.LENGTH_LONG);
-                //toast.show();
+                //gridviewBeginner.getChildAt(position).setEnabled(false);
+               ///////------------click edilen griditemin doğru mu yanlış mı olduğunun kontrolü-----------------
+
+                ////eğer doğru seçim yapıldı ise
                 if(modum==randomSayi){
                     rightCount=rightCount+1;
                     ///////vibration efekti
@@ -384,17 +414,31 @@ public class MainActivity extends AppCompatActivity {
                     mPlayerKir=MediaPlayer.create(MainActivity.this,R.raw.right);
                     mPlayerKir.start();
                     view.setBackgroundColor(Color.GREEN);
+
                 }
-                else if (randomSayi != modum)
-                {wrongCount=wrongCount+1;
-                    ///////vibration efekti
-                    vibe.vibrate(200);
-                    //////ses efekti
-                    mPlayerKir=MediaPlayer.create(MainActivity.this,R.raw.wrong);
-                    mPlayerKir.start();
+                ////eğer yanlış seçim yapıldı ise
+                else if (randomSayi != modum){
+                    wrongCount=wrongCount+1;
+                    if(wrongCount>=((Integer.valueOf(zorlukDeger)*2)+2)){
+                        //////eğer yanlış sayısı zoruluğa göre değişen değere eşit veya büyük ise
+                        ///////vibration efekti
+                        vibe.vibrate(300);
+                        //////ses efekti
+                        mPlayerKir=MediaPlayer.create(MainActivity.this,R.raw.ended);
+                        mPlayerKir.start();
+                        view.setBackgroundColor(Color.RED);
+                        gridviewBeginner.setEnabled(false);
 
-
-                    view.setBackgroundColor(Color.RED);
+                    }
+                    else  {
+                        //////eğer yanlış sayısı zoruluğa göre değişen değerden küçük ise
+                        ///////vibration efekti
+                        vibe.vibrate(200);
+                        //////ses efekti
+                        mPlayerKir = MediaPlayer.create(MainActivity.this, R.raw.wrong);
+                        mPlayerKir.start();
+                        view.setBackgroundColor(Color.RED);
+                    }
                 };
                 textViewRightCount.setText(String.valueOf(rightCount));
                 textViewWrongCount.setText(String.valueOf(wrongCount));
@@ -407,5 +451,33 @@ public class MainActivity extends AppCompatActivity {
 
         });
     }
+
+    /////////////----------------geri tuşuna basıldığında----------------
+    @Override
+    public void onBackPressed() {
+      ///////tip seçimi sayfasında geri tuşuna basılırsa çıkılır.
+         if (myPlace.equals("Tip")){
+             super.onBackPressed();}
+        ///////zorluk seçimi sayfasında geri tuşuna baslırsa tip seçimi sayfasına döner, yeni tip seçilir.
+        if (myPlace.equals("Zorluk")){
+            linearLayoutBase.removeAllViewsInLayout();
+            tipAlma();}
+        ///////oyun gridi sayfasında geri tuşuna basılırsa zorluk seçimi sayfasına döner. yeni zorluk seçilir. tuşa basmadan önce yapılmış doğru ve yanlış clicklerin sayısı sıfırlanır.
+        if(myPlace.equals("Oyun")){
+            rightCount=0;
+            wrongCount=0;
+            linearLayoutRightCountText.removeAllViewsInLayout();
+            linearLayoutWrongCountText.removeAllViewsInLayout();
+            linearLayoutRandomSayi.removeAllViewsInLayout();
+            linearLayoutForGrid.removeAllViewsInLayout();
+            linearLayoutBase.removeAllViewsInLayout();
+            zorlukAlma(Integer.valueOf(secilenTip));
+        }
+
+
+
+    }
+
+
 
 }
