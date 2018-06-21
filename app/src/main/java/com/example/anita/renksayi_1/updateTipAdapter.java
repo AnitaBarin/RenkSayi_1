@@ -17,6 +17,7 @@ public class updateTipAdapter extends  ArrayAdapter<String>{
 
 private final Activity context;
 private final String[] web;
+    int uzun;
 //private final Integer[] imageId;
 public updateTipAdapter(Activity context,
                         String[] web, Integer[] imageId) {
@@ -41,8 +42,9 @@ public View getView(int position, View view, ViewGroup parent) {
        // txtTitle.setMaxWidth(screenHeight/20);
         //txtTitle.setMaxHeight(screenHeight/5);
     //txtTitle.setMaxWidth(screenHeight/50);
+    uzun=(int)Math.sqrt (web.length);
     txtTitle.setWidth(screenHeight/14);
-    txtTitle.setHeight(screenHeight/14);
+    txtTitle.setHeight(screenHeight/(uzun+2));
         int fortextVWidth = ((screenWidth * 9 / 10) / 4);
         int sabitSize = (int) Math.floor(fortextVWidth/ 250);
         int fortextSize = 12 + (sabitSize * 4);
