@@ -30,16 +30,19 @@ import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.appindexing.Thing;
 import com.google.android.gms.common.api.GoogleApiClient;
 
+import java.io.InputStream;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Handler;
 import java.util.logging.LogRecord;
+import java.util.stream.Stream;
 
 import static android.R.attr.max;
 import static android.R.attr.theme;
 import static android.R.attr.wallpaperCloseEnterAnimation;
 import static android.R.id.button1;
+import com.example.anita.renksayi_1.GifImage;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -48,7 +51,8 @@ public class MainActivity extends AppCompatActivity {
     GridView gridviewBeginner, gridviewTip, gridviewZorluk;
     LinearLayout linearLayoutBase, linearLayoutForGrid, linearLayoutForGridAlt, linearLayoutRandomSayi, linearLayoutWrongCountText, linearLayoutRightCountText;
     RelativeLayout.LayoutParams baseLayoutParams;
-    LinearLayout.LayoutParams linearLayoutForGridParams, linearLayoutForGridAltParams, linearLayoutRandomSayiParams, textRandomParams, linearLayoutRightWrongParams, RightWrongTextImageParams;
+    LinearLayout.LayoutParams linearLayoutForGridParams, linearLayoutForGridAltParams, linearLayoutRandomSayiParams, textRandomParams, linearLayoutRightWrongParams, RightWrongTextImageParams,
+            fireworkParams,fireworkParams1,fireworkParams2,fireworkParams3,fireworkParams4,fireworkParams5;
     int beginnerColumnNum, beginnerRowNum;
     int screenWidth, screenHeight;
     int minSayi = 1;
@@ -65,11 +69,16 @@ public class MainActivity extends AppCompatActivity {
     String secilenTip, zorlukDeger;
     String oyunlarAdim, zorlukAdim, tipZorlukm;
     String myPlace = "";
-    private MediaPlayer mPlayerKir = new MediaPlayer();
+    private MediaPlayer mPlayerWork = new MediaPlayer();
+    private MediaPlayer mPlayerTrueFalse = new MediaPlayer();
+    private MediaPlayer mPlayerEnd = new MediaPlayer();
+    private MediaPlayer mPlayerTimeEnd = new MediaPlayer();
+    private MediaPlayer mPlayerCongrate = new MediaPlayer();
     long startTime;
     long finishTime;
     int difference;
     long nowTime;
+    GifImage gifImageCongrate,gifImageCongrate1,gifImageCongrate2,gifImageCongrate3,gifImageCongrate4,gifImageCongrate5;
 
 
     TextView textViewRandom, textViewWrongText, textViewWrongCount, textViewRightText, textViewRightCount;
@@ -430,8 +439,9 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         ///////------------saat tik tak sesi---------------
-        mPlayerKir = MediaPlayer.create(MainActivity.this, R.raw.working);
-        mPlayerKir.start();
+        mPlayerWork = MediaPlayer.create(MainActivity.this, R.raw.allworking);
+        mPlayerWork.start();
+
 
         ////////------------timer tanımlama-------------------
         Timer timer = new Timer(false);
@@ -442,15 +452,15 @@ public class MainActivity extends AppCompatActivity {
                 gridviewBeginner.post(new Runnable() {
                     @Override
                     public void run() {
-                        // Do whatever you want
                         ////////---------------zaman dolduğunda yapılması istenenin tanımlandığı yer-------------
                         String textToast111 = "İşaretlediğiniz zaman  numaralı satırdaki   gösterilecektir";
                         Toast toast = Toast.makeText(getApplicationContext(), textToast111, Toast.LENGTH_SHORT);
                         toast.show();
                         vibe.vibrate(300);
                         //////ses efekti
-                        mPlayerKir = MediaPlayer.create(MainActivity.this, R.raw.timeended);
-                        mPlayerKir.start();
+                        mPlayerWork.stop();
+                        mPlayerTimeEnd = MediaPlayer.create(MainActivity.this, R.raw.timeended);
+                        mPlayerTimeEnd.start();
                         gridviewBeginner.setBackgroundColor(Color.RED);
                         gridviewBeginner.setEnabled(false);
                     }
@@ -482,12 +492,57 @@ public class MainActivity extends AppCompatActivity {
                 ////------------eğer doğru seçim yapıldı ise
                 if (modum == randomSayi) {
                     rightCount = rightCount + 1;
-                    ///////vibration efekti
-                    vibe.vibrate(50);
-                    //////ses efekti
-                    mPlayerKir = MediaPlayer.create(MainActivity.this, R.raw.right);
-                    mPlayerKir.start();
-                    view.setBackgroundColor(Color.GREEN);
+                    if(rightCount>=(Math.pow((Integer.valueOf(zorlukDeger)+1),2))){
+                        ///////////------tüm doğrular bitti ise
+                        vibe.vibrate(300);
+                        mPlayerWork.stop();
+                        mPlayerCongrate = MediaPlayer.create(MainActivity.this, R.raw.congrate);
+                        mPlayerCongrate.start();
+                        gridviewBeginner.setBackgroundColor(Color.GREEN);
+                        gridviewBeginner.setEnabled(false);
+
+
+
+
+                        ////////--------gif için-----------------
+
+                       gifImageCongrate=new GifImage(MainActivity.this);gifImageCongrate1=new GifImage(MainActivity.this);
+                        gifImageCongrate2=new GifImage(MainActivity.this);gifImageCongrate3=new GifImage(MainActivity.this);
+                        gifImageCongrate4=new GifImage(MainActivity.this);gifImageCongrate5=new GifImage(MainActivity.this);
+                        gifImageCongrate.setGifImageResource(R.drawable.firework3);gifImageCongrate1.setGifImageResource(R.drawable.confetti1);
+                        gifImageCongrate2.setGifImageResource(R.drawable.firework4);gifImageCongrate3.setGifImageResource(R.drawable.confetti2);
+                        gifImageCongrate4.setGifImageResource(R.drawable.firework5);gifImageCongrate5.setGifImageResource(R.drawable.confetti3);
+                        fireworkParams = new LinearLayout.LayoutParams(250,250);fireworkParams1=new LinearLayout.LayoutParams(250,250);
+                        fireworkParams2 = new LinearLayout.LayoutParams(250,250);fireworkParams3=new LinearLayout.LayoutParams(250,250);
+                        fireworkParams4 = new LinearLayout.LayoutParams(250,250);fireworkParams5=new LinearLayout.LayoutParams(250,250);
+                        fireworkParams.leftMargin=0;fireworkParams.topMargin=0;
+                        fireworkParams1.leftMargin=screenWidth/3;fireworkParams1.topMargin=0;
+                        fireworkParams2.leftMargin=(screenWidth*2)/3;fireworkParams2.topMargin=0;
+                        fireworkParams3.leftMargin=0;fireworkParams3.topMargin=screenHeight/2;
+                        fireworkParams4.leftMargin=screenWidth/3;fireworkParams4.topMargin=screenHeight/2;
+                        fireworkParams5.leftMargin=(screenWidth*2)/3;fireworkParams5.topMargin=screenHeight/2;
+
+                        gifImageCongrate.setLayoutParams(fireworkParams);gifImageCongrate1.setLayoutParams(fireworkParams1);
+                        gifImageCongrate2.setLayoutParams(fireworkParams2);  gifImageCongrate3.setLayoutParams(fireworkParams3);
+                        gifImageCongrate4.setLayoutParams(fireworkParams4);  gifImageCongrate5.setLayoutParams(fireworkParams5);
+                      // setContentView(gifImageCongrate);
+                     //   setContentView(gifImageCongrate1);
+                       addContentView(gifImageCongrate, fireworkParams);addContentView(gifImageCongrate1, fireworkParams1);
+                        addContentView(gifImageCongrate2, fireworkParams2);addContentView(gifImageCongrate3, fireworkParams3);
+                        addContentView(gifImageCongrate4, fireworkParams4);addContentView(gifImageCongrate5, fireworkParams5);
+
+
+
+                    }
+                    else {
+                        ////////------------henüz tüm doğrular bulunmadı ise
+                        ///////vibration efekti
+                        vibe.vibrate(50);
+                        //////ses efekti
+                        mPlayerTrueFalse = MediaPlayer.create(MainActivity.this, R.raw.right);
+                        mPlayerTrueFalse.start();
+                        view.setBackgroundColor(Color.GREEN);
+                    }
 
                 }
                 ////////---------------eğer yanlış seçim yapıldı ise
@@ -498,8 +553,9 @@ public class MainActivity extends AppCompatActivity {
                         ///////vibration efekti
                         vibe.vibrate(300);
                         //////ses efekti
-                        mPlayerKir = MediaPlayer.create(MainActivity.this, R.raw.allwrong);
-                        mPlayerKir.start();
+                        mPlayerWork.stop();
+                        mPlayerEnd = MediaPlayer.create(MainActivity.this, R.raw.allwrong);
+                        mPlayerEnd.start();
                         view.setBackgroundColor(Color.RED);
                         gridviewBeginner.setEnabled(false);
 
@@ -508,8 +564,8 @@ public class MainActivity extends AppCompatActivity {
                         ///////vibration efekti
                         vibe.vibrate(200);
                         //////ses efekti
-                        mPlayerKir = MediaPlayer.create(MainActivity.this, R.raw.wrong);
-                        mPlayerKir.start();
+                        mPlayerTrueFalse = MediaPlayer.create(MainActivity.this, R.raw.wrong);
+                        mPlayerTrueFalse.start();
                         view.setBackgroundColor(Color.RED);
                     }
                 }
