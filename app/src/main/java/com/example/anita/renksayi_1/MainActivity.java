@@ -6,9 +6,6 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.media.MediaPlayer;
-import android.net.Uri;
-import android.os.CountDownTimer;
-import android.os.SystemClock;
 import android.os.Vibrator;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,8 +13,6 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.GridLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -25,24 +20,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.appindexing.Thing;
 import com.google.android.gms.common.api.GoogleApiClient;
 
-import java.io.InputStream;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Handler;
 import java.util.logging.LogRecord;
-import java.util.stream.Stream;
-
-import static android.R.attr.max;
-import static android.R.attr.theme;
-import static android.R.attr.wallpaperCloseEnterAnimation;
-import static android.R.id.button1;
-import com.example.anita.renksayi_1.GifImage;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -52,12 +37,12 @@ public class MainActivity extends AppCompatActivity {
     LinearLayout linearLayoutBase, linearLayoutForGrid, linearLayoutForGridAlt, linearLayoutRandomSayi, linearLayoutWrongCountText, linearLayoutRightCountText;
     RelativeLayout.LayoutParams baseLayoutParams;
     LinearLayout.LayoutParams linearLayoutForGridParams, linearLayoutForGridAltParams, linearLayoutRandomSayiParams, textRandomParams, linearLayoutRightWrongParams, RightWrongTextImageParams,
-            fireworkParams,fireworkParams1,fireworkParams2,fireworkParams3,fireworkParams4,fireworkParams5;
+            fireworkParams,fireworkParams1,fireworkParams2,fireworkParams3,fireworkParams4,fireworkParams5,endTimeParams,wrongParams;
     int beginnerColumnNum, beginnerRowNum;
     int screenWidth, screenHeight;
     int minSayi = 1;
     int maxSayi = 4;
-    int randomSayi, beklenenYanlisAdet;
+    int randomSayi, beklenenYanlisAdet, bittiMi;
     int rightCount = 0;
     int wrongCount = 0;
     int gridLeft, gridHeight, gridWidth, boxLeft, boxHeight, boxWidth, betweenTwo;
@@ -78,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
     long finishTime;
     int difference;
     long nowTime;
-    GifImage gifImageCongrate,gifImageCongrate1,gifImageCongrate2,gifImageCongrate3,gifImageCongrate4,gifImageCongrate5;
+    GifImage gifImageCongrate,gifImageCongrate1,gifImageCongrate2,gifImageCongrate3,gifImageCongrate4,gifImageCongrate5,gifImageTimeEnd,gifImageWrong;
 
 
     TextView textViewRandom, textViewWrongText, textViewWrongCount, textViewRightText, textViewRightCount;
@@ -225,7 +210,7 @@ public class MainActivity extends AppCompatActivity {
                     secilenTip = String.valueOf(position);
                     String textToast = "İşaretlediğiniz " + position + "  numaralı satırdaki   gösterilecektir";
                     Toast toast = Toast.makeText(getApplicationContext(), textToast, Toast.LENGTH_SHORT);
-                    toast.show();
+                   // toast.show();
                     /////////Zorluk alma için intent çalıştırmaya gidiş
                     ///////tip 0,1,2,3   ise zorluk seçimi yapılır, tip 4,5 ise zorluk direkt 5tir
                     if (position > 3) {
@@ -265,7 +250,7 @@ public class MainActivity extends AppCompatActivity {
                     zorlukDeger = String.valueOf(position);
                     String textToast = "Seçtiğiniz tip -" + secilenTip + "- seçtiğiniz zorluk ise -" + zorlukDeger + "- olmuştur.";
                     Toast toast = Toast.makeText(getApplicationContext(), textToast, Toast.LENGTH_LONG);
-                    toast.show();
+                   // toast.show();
 
                     ////////--------------grid çağırma
                     oyunGridYap(secilenTip, zorlukDeger);
@@ -417,6 +402,9 @@ public class MainActivity extends AppCompatActivity {
         /////--------------- gridi ekrana eklenmesi
         linearLayoutForGrid.addView(gridviewBeginner, listParams);
 
+        //////--------------oyun başlarken herhangi bir nedenle bitiş kontrolüne "0" atanması
+        bittiMi=0;
+
 
         //////--------------zaman hesaplama için başlangıç zamanı ve geçebilir süre tanımlama
         //////--------------zaman hesaplama için başlangıç zamanı ve geçebilir süre tanımlama
@@ -452,17 +440,27 @@ public class MainActivity extends AppCompatActivity {
                 gridviewBeginner.post(new Runnable() {
                     @Override
                     public void run() {
-                        ////////---------------zaman dolduğunda yapılması istenenin tanımlandığı yer-------------
-                        String textToast111 = "İşaretlediğiniz zaman  numaralı satırdaki   gösterilecektir";
-                        Toast toast = Toast.makeText(getApplicationContext(), textToast111, Toast.LENGTH_SHORT);
-                        toast.show();
-                        vibe.vibrate(300);
-                        //////ses efekti
-                        mPlayerWork.stop();
-                        mPlayerTimeEnd = MediaPlayer.create(MainActivity.this, R.raw.timeended);
-                        mPlayerTimeEnd.start();
-                        gridviewBeginner.setBackgroundColor(Color.RED);
-                        gridviewBeginner.setEnabled(false);
+                        if (bittiMi==0) {
+                            ////////---------------zaman dolduğunda yapılması istenenin tanımlandığı yer-------------
+                            String textToast111 = "İşaretlediğiniz zaman  numaralı satırdaki   gösterilecektir";
+                            Toast toast = Toast.makeText(getApplicationContext(), textToast111, Toast.LENGTH_SHORT);
+                           // toast.show();
+                            bittiMi=1;
+                            vibe.vibrate(300);
+                            //////ses efekti
+                            mPlayerWork.stop();
+                            mPlayerTimeEnd = MediaPlayer.create(MainActivity.this, R.raw.timeended);
+                            mPlayerTimeEnd.start();
+                            gridviewBeginner.setBackgroundColor(Color.RED);
+                            gridviewBeginner.setEnabled(false);
+                            gifImageTimeEnd=new GifImage(MainActivity.this);
+                            gifImageTimeEnd.setGifImageResource(R.drawable.timeend0);
+                            endTimeParams = new LinearLayout.LayoutParams(250,250);
+                            endTimeParams.leftMargin=(screenWidth/4);endTimeParams.topMargin=screenHeight/8;
+
+                            gifImageTimeEnd.setLayoutParams(endTimeParams);
+                            addContentView(gifImageTimeEnd, endTimeParams);
+                        }
                     }
                 });
             }
@@ -493,7 +491,8 @@ public class MainActivity extends AppCompatActivity {
                 if (modum == randomSayi) {
                     rightCount = rightCount + 1;
                     if(rightCount>=(Math.pow((Integer.valueOf(zorlukDeger)+1),2))){
-                        ///////////------tüm doğrular bitti ise
+                        ///////////------tüm doğrular bulundu ise
+                        bittiMi=2;
                         vibe.vibrate(300);
                         mPlayerWork.stop();
                         mPlayerCongrate = MediaPlayer.create(MainActivity.this, R.raw.congrate);
@@ -501,10 +500,8 @@ public class MainActivity extends AppCompatActivity {
                         gridviewBeginner.setBackgroundColor(Color.GREEN);
                         gridviewBeginner.setEnabled(false);
 
-
-
-
-                        ////////--------gif için-----------------
+                        ////////--------congrate gif için-----------------
+                        //////GifImage.java da tanımlanan ifimage kullanılıyor. 6 adet gif için
 
                        gifImageCongrate=new GifImage(MainActivity.this);gifImageCongrate1=new GifImage(MainActivity.this);
                         gifImageCongrate2=new GifImage(MainActivity.this);gifImageCongrate3=new GifImage(MainActivity.this);
@@ -525,9 +522,7 @@ public class MainActivity extends AppCompatActivity {
                         gifImageCongrate.setLayoutParams(fireworkParams);gifImageCongrate1.setLayoutParams(fireworkParams1);
                         gifImageCongrate2.setLayoutParams(fireworkParams2);  gifImageCongrate3.setLayoutParams(fireworkParams3);
                         gifImageCongrate4.setLayoutParams(fireworkParams4);  gifImageCongrate5.setLayoutParams(fireworkParams5);
-                      // setContentView(gifImageCongrate);
-                     //   setContentView(gifImageCongrate1);
-                       addContentView(gifImageCongrate, fireworkParams);addContentView(gifImageCongrate1, fireworkParams1);
+                        addContentView(gifImageCongrate, fireworkParams);addContentView(gifImageCongrate1, fireworkParams1);
                         addContentView(gifImageCongrate2, fireworkParams2);addContentView(gifImageCongrate3, fireworkParams3);
                         addContentView(gifImageCongrate4, fireworkParams4);addContentView(gifImageCongrate5, fireworkParams5);
 
@@ -551,6 +546,7 @@ public class MainActivity extends AppCompatActivity {
                     if (wrongCount >= ((Integer.valueOf(zorlukDeger) * 2) + 2)) {
                         //////eğer yanlış sayısı zoruluğa göre değişen değere eşit veya büyük ise
                         ///////vibration efekti
+                        bittiMi=3;
                         vibe.vibrate(300);
                         //////ses efekti
                         mPlayerWork.stop();
@@ -558,6 +554,13 @@ public class MainActivity extends AppCompatActivity {
                         mPlayerEnd.start();
                         view.setBackgroundColor(Color.RED);
                         gridviewBeginner.setEnabled(false);
+                        gifImageWrong=new GifImage(MainActivity.this);
+                        gifImageWrong.setGifImageResource(R.drawable.wrong);
+                        wrongParams = new LinearLayout.LayoutParams(250,250);
+                        wrongParams.leftMargin=(screenWidth/4);wrongParams.topMargin=screenHeight/8;
+
+                        gifImageWrong.setLayoutParams(wrongParams);
+                        addContentView(gifImageWrong, wrongParams);
 
                     } else {
                         //////----------------eğer yanlış sayısı zoruluğa göre değişen değerden küçük ise
@@ -598,11 +601,29 @@ public class MainActivity extends AppCompatActivity {
         if (myPlace.equals("Oyun")) {
             rightCount = 0;
             wrongCount = 0;
+            if (bittiMi==1){////----zaman bitti  ise
+                ViewGroup viewHolder = (ViewGroup)gifImageTimeEnd.getParent();
+                viewHolder.removeView(gifImageTimeEnd);
+                mPlayerTimeEnd.stop();
+            }
+            if (bittiMi==2){//////------tüm doğrular bulundu ise
+                ViewGroup viewHolder = (ViewGroup)gifImageCongrate.getParent();
+                viewHolder.removeView(gifImageCongrate);viewHolder.removeView(gifImageCongrate1);viewHolder.removeView(gifImageCongrate2);
+                viewHolder.removeView(gifImageCongrate3);viewHolder.removeView(gifImageCongrate4);viewHolder.removeView(gifImageCongrate5);
+                viewHolder.removeView(gifImageTimeEnd);
+                mPlayerCongrate.stop();
+            }
+            if (bittiMi==3){///////------max yanlış yapıldı ise
+                ViewGroup viewHolder = (ViewGroup)gifImageWrong.getParent();
+                viewHolder.removeView(gifImageWrong);
+                mPlayerEnd.stop();
+            }
             linearLayoutRightCountText.removeAllViewsInLayout();
             linearLayoutWrongCountText.removeAllViewsInLayout();
             linearLayoutRandomSayi.removeAllViewsInLayout();
             linearLayoutForGrid.removeAllViewsInLayout();
             linearLayoutBase.removeAllViewsInLayout();
+            mPlayerWork.stop();
             zorlukAlma(Integer.valueOf(secilenTip));
         }
 
