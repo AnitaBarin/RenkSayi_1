@@ -1,15 +1,20 @@
 package com.example.anita.renksayi_1;
 
 import android.content.Context;
+import android.view.Menu;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.os.Vibrator;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.OnFlingListener;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -19,6 +24,9 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ViewFlipper;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -29,6 +37,8 @@ import java.util.TimerTask;
 import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 
+import static android.support.v7.widget.RecyclerView.*;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final int REQUEST_USER = 100;
@@ -37,11 +47,11 @@ public class MainActivity extends AppCompatActivity {
     LinearLayout linearLayoutBase, linearLayoutForGrid, linearLayoutForGridAlt, linearLayoutRandomSayi, linearLayoutWrongCountText, linearLayoutRightCountText;
     RelativeLayout.LayoutParams baseLayoutParams;
     LinearLayout.LayoutParams linearLayoutForGridParams, linearLayoutForGridAltParams, linearLayoutRandomSayiParams, textRandomParams, linearLayoutRightWrongParams, RightWrongTextImageParams,
-            fireworkParams,fireworkParams1,fireworkParams2,fireworkParams3,fireworkParams4,fireworkParams5,endTimeParams,wrongParams;
+            fireworkParams,fireworkParams1,fireworkParams2,fireworkParams3,fireworkParams4,fireworkParams5,endTimeParams,wrongParams,tutParams;
     int beginnerColumnNum, beginnerRowNum;
     int screenWidth, screenHeight;
-    int minSayi = 1;
-    int maxSayi = 4;
+    int minSayi = 0;
+    int maxSayi = 3;
     int randomSayi, beklenenYanlisAdet, bittiMi;
     int rightCount = 0;
     int wrongCount = 0;
@@ -64,6 +74,9 @@ public class MainActivity extends AppCompatActivity {
     int difference;
     long nowTime;
     GifImage gifImageCongrate,gifImageCongrate1,gifImageCongrate2,gifImageCongrate3,gifImageCongrate4,gifImageCongrate5,gifImageTimeEnd,gifImageWrong;
+    ViewFlipper tutorialFlip;
+    int tutorialImages[];
+    private float initialX;
 
 
     TextView textViewRandom, textViewWrongText, textViewWrongCount, textViewRightText, textViewRightCount;
@@ -83,6 +96,24 @@ public class MainActivity extends AppCompatActivity {
 
 
         randomSayi = getRandomSayi(minSayi, maxSayi);
+
+
+        //////////////-----------------tutorial için flipper ve imageları tanımlama--------------
+
+        tutorialFlip= new ViewFlipper(this);
+        int  tutorialImages[]={R.drawable.tut01,R.drawable.tut02,R.drawable.tut03,R.drawable.tut04};
+        for (int k=0;k<tutorialImages.length;k++){
+            setFlipperImage(tutorialImages[k]);
+        }
+        tutParams=new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        Animation in=AnimationUtils.loadAnimation(this,android.R.anim.slide_in_left);
+        Animation out=AnimationUtils.loadAnimation(this,android.R.anim.slide_out_right);
+        tutorialFlip.setInAnimation(in);
+        tutorialFlip.setOutAnimation(out);
+
+        addContentView(tutorialFlip,tutParams);
+
+
 
 
         ////////--------------------------genel base layout  tanımlama----------------------
@@ -107,12 +138,22 @@ public class MainActivity extends AppCompatActivity {
 
 
         ///////////-----------------------------oyunlar için tip seçimi fonksiyonu çağırma------------------------------
-        tipAlma();
+       // tipAlma();
 
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
+
+    /////////-----------------tutorial için flipper ekrana ekleme-------------------
+    private void setFlipperImage(int res) {
+
+        ImageView imgv=new ImageView(this);
+        imgv.setBackgroundResource(res);
+        tutorialFlip.addView(imgv);
+
+    }
+
 
 
     ///////////-------------------------------------adapter bölümü----------------------------------------------
@@ -629,5 +670,42 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    //////////////------------- tutorial imagelarının manuel slip edilmesi için----------------
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        //getMenuInflater().inflate(android.R.menu.class, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent touchevent) {
+        switch (touchevent.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                initialX = touchevent.getX();
+                break;
+            case MotionEvent.ACTION_UP:
+                float finalX = touchevent.getX();
+                if (initialX > finalX) {
+                    if (tutorialFlip.getDisplayedChild() == tutorialImages.length)
+                        break;
+
+ /*TruitonFlipper.setInAnimation(this, R.anim.in_right);
+ TruitonFlipper.setOutAnimation(this, R.anim.out_left);*/
+
+                    tutorialFlip.showNext();
+                } else {
+                    if (tutorialFlip.getDisplayedChild() == 0)
+                        break;
+
+ /*TruitonFlipper.setInAnimation(this, R.anim.in_left);
+ TruitonFlipper.setOutAnimation(this, R.anim.out_right);*/
+
+                    tutorialFlip.showPrevious();
+                }
+                break;
+        }
+        return false;
+    }
 }
