@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -44,10 +45,11 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_USER = 100;
     public String intentDonus;
     GridView gridviewBeginner, gridviewTip, gridviewZorluk;
+    ImageButton imageButtonTutor,imageButtonGame, imageButtonTrk,imageButtonEng;
     LinearLayout linearLayoutBase, linearLayoutForGrid, linearLayoutForGridAlt, linearLayoutRandomSayi, linearLayoutWrongCountText, linearLayoutRightCountText;
     RelativeLayout.LayoutParams baseLayoutParams;
     LinearLayout.LayoutParams linearLayoutForGridParams, linearLayoutForGridAltParams, linearLayoutRandomSayiParams, textRandomParams, linearLayoutRightWrongParams, RightWrongTextImageParams,
-            fireworkParams,fireworkParams1,fireworkParams2,fireworkParams3,fireworkParams4,fireworkParams5,endTimeParams,wrongParams,tutParams;
+            fireworkParams,fireworkParams1,fireworkParams2,fireworkParams3,fireworkParams4,fireworkParams5,endTimeParams,wrongParams,tutParams, butEngParams,butTrkParams;
     int beginnerColumnNum, beginnerRowNum;
     int screenWidth, screenHeight;
     int minSayi = 0;
@@ -76,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
     GifImage gifImageCongrate,gifImageCongrate1,gifImageCongrate2,gifImageCongrate3,gifImageCongrate4,gifImageCongrate5,gifImageTimeEnd,gifImageWrong;
     ViewFlipper tutorialFlip;
     int tutorialImages[];
+    int tutorialSayi;
     private float initialX;
 
 
@@ -97,21 +100,42 @@ public class MainActivity extends AppCompatActivity {
 
         randomSayi = getRandomSayi(minSayi, maxSayi);
 
+        /////////---------------------------------dimension alma---------------------------------
+        ////ekran için dimension alma
+        dimens textVD = new dimens();
+        screenHeight = textVD.getScreenHeight(this);
+        screenWidth = textVD.getScreenWidth(this);
+
+
+        ////////////////--------------başlangıçta ingilizce mı türkçe mi seçimi
+
+
+       /* imageButtonTrk= new ImageButton(this);
+        imageButtonEng=new ImageButton(this);
+        imageButtonTrk.setImageResource(R.drawable.button_trk);
+        imageButtonTrk.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+        imageButtonEng.setImageResource(R.drawable.button_eng);
+        imageButtonEng.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        int butWSize=screenWidth/5;
+        int butHSize=butWSize/4*3;
+        butEngParams = new LinearLayout.LayoutParams(butWSize, butHSize);
+        butTrkParams = new LinearLayout.LayoutParams(butWSize, butHSize);
+
+        butEngParams.leftMargin = screenWidth/10;
+        butEngParams.topMargin = screenHeight/10;
+        butTrkParams.leftMargin =screenWidth/10;
+        butTrkParams.topMargin = screenHeight -(screenHeight/ 10) -(screenHeight/ 10)-butHSize ;
+        imageButtonEng.setLayoutParams(butEngParams);
+        imageButtonTrk.setLayoutParams(butTrkParams);
+        addContentView(imageButtonEng,butEngParams);
+        addContentView(imageButtonTrk,butTrkParams);*/
+
+        ////////////////--------------başlangıçta tutorial mı oyun mu seçimi
+
 
         //////////////-----------------tutorial için flipper ve imageları tanımlama--------------
 
-        tutorialFlip= new ViewFlipper(this);
-        int  tutorialImages[]={R.drawable.tut01,R.drawable.tut02,R.drawable.tut03,R.drawable.tut04};
-        for (int k=0;k<tutorialImages.length;k++){
-            setFlipperImage(tutorialImages[k]);
-        }
-        tutParams=new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        Animation in=AnimationUtils.loadAnimation(this,android.R.anim.slide_in_left);
-        Animation out=AnimationUtils.loadAnimation(this,android.R.anim.slide_out_right);
-        tutorialFlip.setInAnimation(in);
-        tutorialFlip.setOutAnimation(out);
-
-        addContentView(tutorialFlip,tutParams);
+       tutorialAc();
 
 
 
@@ -130,11 +154,6 @@ public class MainActivity extends AppCompatActivity {
         linearLayoutBase.setLayoutParams(baseLayoutParams);
         addContentView(linearLayoutBase, baseLayoutParams);
 
-        /////////---------------------------------dimension alma---------------------------------
-        ////ekran için dimension alma
-        dimens textVD = new dimens();
-        screenHeight = textVD.getScreenHeight(this);
-        screenWidth = textVD.getScreenWidth(this);
 
 
         ///////////-----------------------------oyunlar için tip seçimi fonksiyonu çağırma------------------------------
@@ -145,14 +164,6 @@ public class MainActivity extends AppCompatActivity {
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
-    /////////-----------------tutorial için flipper ekrana ekleme-------------------
-    private void setFlipperImage(int res) {
-
-        ImageView imgv=new ImageView(this);
-        imgv.setBackgroundResource(res);
-        tutorialFlip.addView(imgv);
-
-    }
 
 
 
@@ -174,6 +185,9 @@ public class MainActivity extends AppCompatActivity {
         // listViewUpdate = new ListView(this);
         gridViewUpdatealttip.setAdapter(adapter);
     }
+
+
+
 
 
     /////////////-----------------------------------oyun mod  sayı üretimi------------------------------------
@@ -213,6 +227,13 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(intentZorlukAl, REQUEST_USER);
 
     }
+
+    private void tutorialAc() {
+        myPlace = "Tutorial";
+        Intent intentTutor = new Intent(this, Tutor.class);
+        intentDonus = "tutorial";
+        intentTutor.putExtra("intentTipi", intentDonus);
+        startActivityForResult(intentTutor, REQUEST_USER);}
 
 
     ///////--------------------------intentlerin dönüşleri-------------------------------------
@@ -298,6 +319,15 @@ public class MainActivity extends AppCompatActivity {
 
                 }
             });
+        }
+
+        //////////-------------tutorial gösterme geri dönüşü--------
+
+        if (intentDonus.equals("TutorAc")){
+            String textToast = "İşaretlediğiniz tutorial   gösterilecektir";
+            Toast toast = Toast.makeText(getApplicationContext(), textToast, Toast.LENGTH_SHORT);
+            toast.show();
+
         }
     }
 
@@ -670,42 +700,4 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    //////////////------------- tutorial imagelarının manuel slip edilmesi için----------------
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        //getMenuInflater().inflate(android.R.menu.class, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent touchevent) {
-        switch (touchevent.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                initialX = touchevent.getX();
-                break;
-            case MotionEvent.ACTION_UP:
-                float finalX = touchevent.getX();
-                if (initialX > finalX) {
-                    if (tutorialFlip.getDisplayedChild() == tutorialImages.length)
-                        break;
-
- /*TruitonFlipper.setInAnimation(this, R.anim.in_right);
- TruitonFlipper.setOutAnimation(this, R.anim.out_left);*/
-
-                    tutorialFlip.showNext();
-                } else {
-                    if (tutorialFlip.getDisplayedChild() == 0)
-                        break;
-
- /*TruitonFlipper.setInAnimation(this, R.anim.in_left);
- TruitonFlipper.setOutAnimation(this, R.anim.out_right);*/
-
-                    tutorialFlip.showPrevious();
-                }
-                break;
-        }
-        return false;
-    }
 }
