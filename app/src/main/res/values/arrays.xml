@@ -20,6 +20,15 @@
         <item>MidiHelix</item>
     </string-array>
 
+    <string-array name="types">
+        <item>Linear</item>
+        <item>InverseLinear</item>
+        <item>Diagonal</item>
+        <item>Helix</item>
+        <item>MiniHelix</item>
+        <item>MidiHelix</item>
+    </string-array>
+
     <string-array name="TumTipZorluk">
         <item>Lineer0</item>     <item>Lineer1</item>        <item>Lineer2</item>        <item>Lineer3</item>        <item>Lineer4</item>        <item>Lineer5</item>        <item>TersLineer0</item>
         <item>TersLineer1</item>        <item>TersLineer2</item>        <item>TersLineer3</item>        <item>TersLineer4</item>        <item>TersLineer5</item>        <item>Diagonal0</item>

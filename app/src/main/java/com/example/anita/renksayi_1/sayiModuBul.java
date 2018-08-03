@@ -26,8 +26,8 @@ public class sayiModuBul {
 
     public int getSayiMod() {
         sayiMod= (int) (gelenId - (ceil(gelenId/4))*4);
-        if (sayiMod==0) {
-        sayiMod=4;}
+       /* if (sayiMod==0) {
+        sayiMod=4;}*/
         return sayiMod;
     }
 }

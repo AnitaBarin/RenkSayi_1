@@ -3,6 +3,8 @@
     package="com.example.anita.renksayi_1">
 
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -36,6 +38,22 @@
         <activity
             android:name=".Tutor"
             android:label="@string/title_activity_tutor"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".LangSec"
+            android:label="@string/title_activity_lang_sec"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".IsSec"
+            android:label="@string/title_activity_is_sec"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".CreatePoint"
+            android:label="@string/title_activity_create_point"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".PuanAl"
+            android:label="@string/title_activity_puan_al"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
     </application>
 

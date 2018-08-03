@@ -3,4 +3,9 @@
     <string name="title_activity_zorluk_secim">ZorlukSecim</string>
     <string name="title_activity_tip_secim">TipSecim</string>
     <string name="title_activity_tutor">Tutor</string>
+    <string name="title_activity_lang_sec">LangSec</string>
+    <string name="title_activity_is_sec">IsSec</string>
+    <string name="title_activity_copy_db">CopyDb</string>
+    <string name="title_activity_create_point">CreatePoint</string>
+    <string name="title_activity_puan_al">PuanAl</string>
 </resources>

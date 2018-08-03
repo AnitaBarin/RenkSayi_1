@@ -1,6 +1,10 @@
 package com.example.anita.renksayi_1;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+import android.provider.BaseColumns;
 import android.view.Menu;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -37,6 +41,11 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Handler;
 import java.util.logging.LogRecord;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 import static android.support.v7.widget.RecyclerView.*;
 
@@ -63,7 +72,8 @@ public class MainActivity extends AppCompatActivity {
     String[] tipler;
     String[] zorlukSayi;
     String[] sayilar;
-    String secilenTip, zorlukDeger;
+    String[] oyunlarAdi;
+    String secilenTip, zorlukDeger, secilenDil,secilenIs;
     String oyunlarAdim, zorlukAdim, tipZorlukm;
     String myPlace = "";
     private MediaPlayer mPlayerWork = new MediaPlayer();
@@ -82,8 +92,11 @@ public class MainActivity extends AppCompatActivity {
     private float initialX;
 
 
+
     TextView textViewRandom, textViewWrongText, textViewWrongCount, textViewRightText, textViewRightCount;
     ImageView imageViewWrong, imageViewRight;
+
+    String DATABASE_NAME= "Midpoints.db";
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -98,6 +111,19 @@ public class MainActivity extends AppCompatActivity {
         this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
 
+        //////db db db db db db///////////////
+
+      CreatePoint createPoint;
+        SQLiteDatabase db = openOrCreateDatabase(DATABASE_NAME, Context.MODE_PRIVATE, null);
+        createPoint=new CreatePoint(this);
+        createPoint.onCreate(db);
+        createPoint.insertDb(db);
+       // createPoint.selectDb(db);
+
+
+        ///////////db db db db db db ///////////
+
+
         randomSayi = getRandomSayi(minSayi, maxSayi);
 
         /////////---------------------------------dimension alma---------------------------------
@@ -107,35 +133,16 @@ public class MainActivity extends AppCompatActivity {
         screenWidth = textVD.getScreenWidth(this);
 
 
-        ////////////////--------------başlangıçta ingilizce mı türkçe mi seçimi
 
 
-       /* imageButtonTrk= new ImageButton(this);
-        imageButtonEng=new ImageButton(this);
-        imageButtonTrk.setImageResource(R.drawable.button_trk);
-        imageButtonTrk.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-        imageButtonEng.setImageResource(R.drawable.button_eng);
-        imageButtonEng.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        int butWSize=screenWidth/5;
-        int butHSize=butWSize/4*3;
-        butEngParams = new LinearLayout.LayoutParams(butWSize, butHSize);
-        butTrkParams = new LinearLayout.LayoutParams(butWSize, butHSize);
 
-        butEngParams.leftMargin = screenWidth/10;
-        butEngParams.topMargin = screenHeight/10;
-        butTrkParams.leftMargin =screenWidth/10;
-        butTrkParams.topMargin = screenHeight -(screenHeight/ 10) -(screenHeight/ 10)-butHSize ;
-        imageButtonEng.setLayoutParams(butEngParams);
-        imageButtonTrk.setLayoutParams(butTrkParams);
-        addContentView(imageButtonEng,butEngParams);
-        addContentView(imageButtonTrk,butTrkParams);*/
+        ///////////////-----------------Ingilizce mi Türkçe mi seçimi
 
-        ////////////////--------------başlangıçta tutorial mı oyun mu seçimi
-
+        langSec();
 
         //////////////-----------------tutorial için flipper ve imageları tanımlama--------------
 
-       tutorialAc();
+       //tutorialAc();
 
 
 
@@ -157,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         ///////////-----------------------------oyunlar için tip seçimi fonksiyonu çağırma------------------------------
-       // tipAlma();
+      // tipAlma();
 
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -211,6 +218,7 @@ public class MainActivity extends AppCompatActivity {
         //intentZorlukAl.putExtra("giden", gidenDeger);
         intentDonus = "tip";
         intentTipAl.putExtra("intentTipi", intentDonus);
+        intentTipAl.putExtra("dilim",secilenDil);
         startActivityForResult(intentTipAl, REQUEST_USER);
 
     }
@@ -228,12 +236,48 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void tutorialAc() {
+
+    ///////////////---------tutorial seçiminde tutorial açmak için---------------
+    private void tutorialAc(String secilenDilim) {
         myPlace = "Tutorial";
         Intent intentTutor = new Intent(this, Tutor.class);
         intentDonus = "tutorial";
         intentTutor.putExtra("intentTipi", intentDonus);
         startActivityForResult(intentTutor, REQUEST_USER);}
+
+
+    //////////////--------------dil seçimi ingilizce/türkçe seçimi için
+    private void langSec(){
+        myPlace="Language";
+        Intent intentLang= new Intent(this,LangSec.class);
+        intentDonus="language";
+        intentLang.putExtra("intentTipi",intentDonus);
+        startActivityForResult(intentLang, REQUEST_USER);
+
+    }
+
+
+    ////////////---------------oyun mu tutorial mı seç
+
+    private void isSec(String languageSec){
+        myPlace="İş";
+        Intent intentIs= new Intent(this,IsSec.class);
+        intentDonus="iş";
+        intentIs.putExtra("intentTipi",intentDonus);
+        intentIs.putExtra("dilim",languageSec);
+        startActivityForResult(intentIs, REQUEST_USER);
+
+    }
+
+    //////////--------------puanları alabilmek için-----------
+    private void puanAlma(){
+        myPlace="Puan";
+        Intent intentPuan= new Intent(this,PuanAl.class);
+        intentDonus="Puan";
+        intentPuan.putExtra("intentTipi",intentDonus);
+        startActivityForResult(intentPuan, REQUEST_USER);
+
+    }
 
 
     ///////--------------------------intentlerin dönüşleri-------------------------------------
@@ -327,6 +371,41 @@ public class MainActivity extends AppCompatActivity {
             String textToast = "İşaretlediğiniz tutorial   gösterilecektir";
             Toast toast = Toast.makeText(getApplicationContext(), textToast, Toast.LENGTH_SHORT);
             toast.show();
+            isSec(secilenDil);
+
+        }
+
+        ////////////----------------dil seçimi
+
+        if (intentDonus.equals("Language")){
+            secilenDil=data.getStringExtra("lang");
+            String textToast = "Dil seçtin";
+            Toast toast = Toast.makeText(getApplicationContext(), textToast, Toast.LENGTH_SHORT);
+            toast.show();
+            isSec(secilenDil);
+        }
+
+        ///////-------------yapılacak işin seçimi-------------
+
+        if(intentDonus.equals("Is")){
+            secilenIs=data.getStringExtra("is");
+            ///////////--------------oyun ise-----------------
+           if (secilenIs.equals("Oyun")){
+            tipAlma();
+           }
+            /////////////-------------tutor ise------------
+            if(secilenIs.equals("Tutor")){
+                tutorialAc(secilenDil);
+            }
+            /////////////-----------puan ise------------
+            if(secilenIs.equals("Puan")){
+                puanAlma();
+            }
+        }
+
+
+        /////////////-------------puanlar kısmından dönüş için----------
+        if (intentDonus.equals("Puan")){
 
         }
     }
@@ -432,7 +511,12 @@ public class MainActivity extends AppCompatActivity {
 
         String oyunum, sayim;
         //////////------------------oyun adları ve zorluklar için res/arrays verilerini alma
-        String[] oyunlarAdi = this.getResources().getStringArray(R.array.tipler);
+        if (secilenDil.equals("Trk")) {
+            oyunlarAdi = this.getResources().getStringArray(R.array.tipler);
+        }
+        if(secilenDil.equals("Eng")){
+            oyunlarAdi = this.getResources().getStringArray(R.array.tipler);
+        }
         String[] zorlukAdi = this.getResources().getStringArray(R.array.zorluk);
         String[] tipZorluk = this.getResources().getStringArray(R.array.TumTipZorluk);
 
@@ -661,7 +745,9 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {
         ///////----------------tip seçimi sayfasında geri tuşuna basılırsa çıkılır.
         if (myPlace.equals("Tip")) {
-            super.onBackPressed();
+            //super.onBackPressed();
+            linearLayoutBase.removeAllViewsInLayout();
+            isSec(secilenDil);
         }
         ///////----------------zorluk seçimi sayfasında geri tuşuna baslırsa tip seçimi sayfasına döner, yeni tip seçilir.
         if (myPlace.equals("Zorluk")) {
