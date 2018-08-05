@@ -55,7 +55,7 @@ public class LangSec extends AppCompatActivity implements View.OnClickListener{
         imageButtonTrk.setImageResource(R.drawable.button_trk);
         imageButtonTrk.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
         imageButtonEng.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-        int butWSize = screenWidthL / 5;
+        int butWSize = screenWidthL / 4;
         int butHSize = butWSize / 4 * 3;
         buttonParam1 = new LinearLayout.LayoutParams(butWSize, butHSize);
         buttonParam2 = new LinearLayout.LayoutParams(butWSize, butHSize);

@@ -57,7 +57,7 @@ public class IsSec extends AppCompatActivity implements View.OnClickListener {
         imageButtonGame.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
         imageButtonTutor.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
         imageButtonPoint.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-        int butWSize = screenWidthI / 5;
+        int butWSize = screenWidthI / 4;
         int butHSize = butWSize / 4 * 3;
         buttonParam1 = new LinearLayout.LayoutParams(butWSize, butHSize);
         buttonParam2 = new LinearLayout.LayoutParams(butWSize, butHSize);
@@ -67,8 +67,8 @@ public class IsSec extends AppCompatActivity implements View.OnClickListener {
         buttonParam1.topMargin = screenHeightI / 10;
         buttonParam2.leftMargin = screenWidthI / 10;
         buttonParam2.topMargin = screenHeightI - (screenHeightI / 10) - (screenHeightI / 10) - butHSize;
-        buttonParam3.rightMargin=screenWidthI/10;
-        buttonParam3.topMargin=(screenHeightI/2) -butHSize;
+        buttonParam3.leftMargin=screenWidthI-butWSize-screenWidthI/10;
+        buttonParam3.topMargin=(screenHeightI/2) -(butHSize/2);
         imageButtonGame.setLayoutParams(buttonParam1);
         imageButtonTutor.setLayoutParams(buttonParam2);
         imageButtonPoint.setLayoutParams(buttonParam3);
