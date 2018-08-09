@@ -8,4 +8,5 @@
     <string name="title_activity_copy_db">CopyDb</string>
     <string name="title_activity_create_point">CreatePoint</string>
     <string name="title_activity_puan_al">PuanAl</string>
+    <string name="title_activity_puanlar_al">PuanlarAl</string>
 </resources>

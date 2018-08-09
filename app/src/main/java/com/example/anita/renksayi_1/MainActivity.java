@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
     TextView textViewRandom, textViewWrongText, textViewWrongCount, textViewRightText, textViewRightCount;
     ImageView imageViewWrong, imageViewRight;
 
-    String DATABASE_NAME= "Midpoints.db";
+    String DATABASE_NAME= "Modpoints.db";
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -118,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
         createPoint=new CreatePoint(this);
         createPoint.onCreate(db);
         createPoint.insertDb(db);
-       // createPoint.selectDb(db);
+      // createPoint.selectDb(db);
 
 
         ///////////db db db db db db ///////////
@@ -272,7 +272,7 @@ public class MainActivity extends AppCompatActivity {
     //////////--------------puanları alabilmek için-----------
     private void puanAlma(){
         myPlace="Puan";
-        Intent intentPuan= new Intent(this,PuanAl.class);
+        Intent intentPuan= new Intent(this,PuanlarAl.class);
         intentDonus="Puan";
         intentPuan.putExtra("intentTipi",intentDonus);
         startActivityForResult(intentPuan, REQUEST_USER);

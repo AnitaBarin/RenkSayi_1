@@ -47,12 +47,12 @@ public class IsSec extends AppCompatActivity implements View.OnClickListener {
         imageButtonPoint= new ImageButton(this);
         if (dilSec.equals("Eng")){
         imageButtonGame.setImageResource(R.drawable.button_game);
-        imageButtonTutor.setImageResource(R.drawable.button_tutor);}
-        imageButtonPoint.setImageResource(R.drawable.buttonpoint);
+        imageButtonTutor.setImageResource(R.drawable.button_tutor);
+        imageButtonPoint.setImageResource(R.drawable.buttonpoint);}
         if (dilSec.equals("Trk")){
             imageButtonGame.setImageResource(R.drawable.button_gametrk);
-            imageButtonTutor.setImageResource(R.drawable.button_tutortrk);}
-        imageButtonPoint.setImageResource(R.drawable.buttonpuan);
+            imageButtonTutor.setImageResource(R.drawable.button_tutortrk);
+            imageButtonPoint.setImageResource(R.drawable.buttonpuan);}
 
         imageButtonGame.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
         imageButtonTutor.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
@@ -106,6 +106,8 @@ public class IsSec extends AppCompatActivity implements View.OnClickListener {
         viewHolder.removeView(imageButtonGame);
         ViewGroup viewHolder1 = (ViewGroup)imageButtonTutor.getParent();
         viewHolder1.removeView(imageButtonTutor);
+        ViewGroup viewHolder2 = (ViewGroup)imageButtonPoint.getParent();
+        viewHolder2.removeView(imageButtonPoint);
 
         ///////////------------dil seçimi sonrası dönüş
         Intent intentIsDonus = new Intent();

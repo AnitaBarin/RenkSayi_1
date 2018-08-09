@@ -54,6 +54,10 @@
         <activity
             android:name=".PuanAl"
             android:label="@string/title_activity_puan_al"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".PuanlarAl"
+            android:label="@string/title_activity_puanlar_al"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
     </application>
 
