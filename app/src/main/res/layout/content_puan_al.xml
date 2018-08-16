@@ -21,4 +21,19 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="101dp" />
+
+    <Button
+        android:text="Button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="101dp"
+        android:layout_marginStart="101dp"
+        android:typeface="normal"
+        android:textColor="@color/colorBack"
+        android:fontFamily=""
+        android:layout_marginTop="54dp"
+        android:id="@+id/button" />
 </RelativeLayout>

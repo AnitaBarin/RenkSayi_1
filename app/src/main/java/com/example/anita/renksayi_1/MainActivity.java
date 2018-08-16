@@ -1,5 +1,6 @@
 package com.example.anita.renksayi_1;
 
+import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -13,10 +14,10 @@ import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.os.Vibrator;
 import android.provider.MediaStore;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.*;
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.RecyclerView.OnFlingListener;
+import android.support.v7.widget.*;
+//import android.support.v7.widget.RecyclerView.OnFlingListener;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -36,6 +37,9 @@ import android.view.animation.AnimationUtils;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -49,10 +53,10 @@ import java.sql.Statement;
 
 import static android.support.v7.widget.RecyclerView.*;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity  extends Activity {
 
     private static final int REQUEST_USER = 100;
-    public String intentDonus;
+    public String intentDonus, intentDonusB;
     GridView gridviewBeginner, gridviewTip, gridviewZorluk;
     ImageButton imageButtonTutor,imageButtonGame, imageButtonTrk,imageButtonEng;
     LinearLayout linearLayoutBase, linearLayoutForGrid, linearLayoutForGridAlt, linearLayoutRandomSayi, linearLayoutWrongCountText, linearLayoutRightCountText;
@@ -73,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
     String[] zorlukSayi;
     String[] sayilar;
     String[] oyunlarAdi;
+    String[] puanTable;
     String secilenTip, zorlukDeger, secilenDil,secilenIs;
     String oyunlarAdim, zorlukAdim, tipZorlukm;
     String myPlace = "";
@@ -83,13 +88,14 @@ public class MainActivity extends AppCompatActivity {
     private MediaPlayer mPlayerCongrate = new MediaPlayer();
     long startTime;
     long finishTime;
-    int difference;
+    int difference, puanKazan;
     long nowTime;
     GifImage gifImageCongrate,gifImageCongrate1,gifImageCongrate2,gifImageCongrate3,gifImageCongrate4,gifImageCongrate5,gifImageTimeEnd,gifImageWrong;
     ViewFlipper tutorialFlip;
     int tutorialImages[];
     int tutorialSayi;
     private float initialX;
+    String gidenInsSQL;
 
 
 
@@ -117,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
         SQLiteDatabase db = openOrCreateDatabase(DATABASE_NAME, Context.MODE_PRIVATE, null);
         createPoint=new CreatePoint(this);
         createPoint.onCreate(db);
-        createPoint.insertDb(db);
+      //  createPoint.insertDb(db);
       // createPoint.selectDb(db);
 
 
@@ -269,6 +275,47 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /////////////----------puanları kayıt için
+
+    public void puanKaydet(){
+        myPlace="Kayıt";
+        Intent intentKayit= new Intent(this,PuanSave.class);
+        intentDonus="Kayit";
+        //////günün tarihini alma
+        DateFormat df = new SimpleDateFormat(("dd-MMM-yyyy"));
+        String dateS = df.format(Calendar.getInstance().getTime());
+        ////////-----oyun ve xorluk tipine göre puan alma
+        if (oyunlarAdim.equals("Lineer") || oyunlarAdim.equals("Linear")){
+          puanTable= this.getResources().getStringArray(R.array.lineerpoint);
+        }
+        if (oyunlarAdim.equals("TersLineer") || oyunlarAdim.equals("InverseLinear")){
+            puanTable= this.getResources().getStringArray(R.array.terslineerpoint);
+        }
+        if (oyunlarAdim.equals("Diagonal") || oyunlarAdim.equals("Diagonal")){
+            puanTable= this.getResources().getStringArray(R.array.diagonalpoint);
+        }
+        if (oyunlarAdim.equals("Helix") || oyunlarAdim.equals("Helix")){
+            puanTable= this.getResources().getStringArray(R.array.helixpoint);
+        }
+        if (oyunlarAdim.equals("MiniHelix") || oyunlarAdim.equals("MiniHelix")){
+            puanTable= this.getResources().getStringArray(R.array.minihelixpoint);
+        }
+        if (oyunlarAdim.equals("MidiHelix") || oyunlarAdim.equals("MidiHelix")){
+            puanTable= this.getResources().getStringArray(R.array.midihelixpoint);
+        }
+        puanKazan= Integer.valueOf(puanTable[Integer.valueOf(zorlukDeger)]);
+        ///// oyun süresini bulma - tarih ile süre birlikte time lanına yazılıyor.
+        long diff1=(finishTime-startTime)/1000;
+        //////sql oluşturma
+        gidenInsSQL="insert into points (who, game,difficulty,right,wrong,time,point)  values ('ben','"+oyunlarAdim+"',"+zorlukDeger+","+rightCount+","+wrongCount+",'"+dateS+"/"+diff1+"',"+puanKazan+")";
+        ///////intent ile gidiş
+        intentKayit.putExtra("intentTipi",intentDonus);
+        intentKayit.putExtra("insSql",gidenInsSQL);
+        startActivityForResult(intentKayit,REQUEST_USER);
+
+
+    }
+
     //////////--------------puanları alabilmek için-----------
     private void puanAlma(){
         myPlace="Puan";
@@ -287,13 +334,13 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_USER) {
             if (resultCode == RESULT_OK) {
-                intentDonus = data.getStringExtra("tipDonus");
+                intentDonusB = data.getStringExtra("tipDonus");
 
             }
         }
 
         //////////////---------------Tip seçimi için intent
-        if (intentDonus.equals("TipSecim")) {
+        if (intentDonusB.equals("TipSecim")) {
             Integer tipImage[] = (Integer[]) data.getSerializableExtra("tipResim");
             String tipAdi[] = (String[]) data.getSerializableExtra("tipAd");
 
@@ -333,7 +380,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         ////////////-------------zorluk seçimi için intent
-        if (intentDonus.equals("ZorlukSecim")) {
+        if (intentDonusB.equals("ZorlukSecim")) {
             Integer zorlukImage[] = (Integer[]) data.getSerializableExtra("zorluklar");
             String zorlukSayi[] = {"", "", "", "", "", ""};
             ///////tip seçimi için grid tanımlama
@@ -367,7 +414,7 @@ public class MainActivity extends AppCompatActivity {
 
         //////////-------------tutorial gösterme geri dönüşü--------
 
-        if (intentDonus.equals("TutorAc")){
+        if (intentDonusB.equals("TutorAc")){
             String textToast = "İşaretlediğiniz tutorial   gösterilecektir";
             Toast toast = Toast.makeText(getApplicationContext(), textToast, Toast.LENGTH_SHORT);
             toast.show();
@@ -377,7 +424,7 @@ public class MainActivity extends AppCompatActivity {
 
         ////////////----------------dil seçimi
 
-        if (intentDonus.equals("Language")){
+        if (intentDonusB.equals("Language")){
             secilenDil=data.getStringExtra("lang");
             String textToast = "Dil seçtin";
             Toast toast = Toast.makeText(getApplicationContext(), textToast, Toast.LENGTH_SHORT);
@@ -387,7 +434,7 @@ public class MainActivity extends AppCompatActivity {
 
         ///////-------------yapılacak işin seçimi-------------
 
-        if(intentDonus.equals("Is")){
+        if(intentDonusB.equals("Is")){
             secilenIs=data.getStringExtra("is");
             ///////////--------------oyun ise-----------------
            if (secilenIs.equals("Oyun")){
@@ -405,7 +452,8 @@ public class MainActivity extends AppCompatActivity {
 
 
         /////////////-------------puanlar kısmından dönüş için----------
-        if (intentDonus.equals("Puan")){
+        if (intentDonusB.equals("Puan")){
+            isSec(secilenDil);
 
         }
     }
@@ -556,6 +604,7 @@ public class MainActivity extends AppCompatActivity {
 
         /////--------------- gridi ekrana eklenmesi
         linearLayoutForGrid.addView(gridviewBeginner, listParams);
+        startTime=System.currentTimeMillis();
 
         //////--------------oyun başlarken herhangi bir nedenle bitiş kontrolüne "0" atanması
         bittiMi=0;
@@ -584,6 +633,7 @@ public class MainActivity extends AppCompatActivity {
         ///////------------saat tik tak sesi---------------
         mPlayerWork = MediaPlayer.create(MainActivity.this, R.raw.allworking);
         mPlayerWork.start();
+        //startTime=System.currentTimeMillis();
 
 
         ////////------------timer tanımlama-------------------
@@ -680,6 +730,8 @@ public class MainActivity extends AppCompatActivity {
                         addContentView(gifImageCongrate, fireworkParams);addContentView(gifImageCongrate1, fireworkParams1);
                         addContentView(gifImageCongrate2, fireworkParams2);addContentView(gifImageCongrate3, fireworkParams3);
                         addContentView(gifImageCongrate4, fireworkParams4);addContentView(gifImageCongrate5, fireworkParams5);
+                        finishTime=System.currentTimeMillis();
+                        puanKaydet();
 
 
 

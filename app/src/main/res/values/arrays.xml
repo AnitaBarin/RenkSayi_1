@@ -354,4 +354,36 @@
         <item>137</item>        <item>142</item>        <item>135</item>        <item>118</item>        <item>88</item>        <item>87</item>        <item>86</item>        <item>85</item>
         <item>84</item>        <item>83</item>        <item>124</item>        <item>123</item>        <item>122</item>        <item>121</item>        <item>120</item>        <item>119</item>
     </string-array>
+
+    <string-array name="lineerpoint">
+        <item>1</item>         <item>2</item>         <item>3</item>         <item>4</item>         <item>5</item>         <item>6</item>
+    </string-array>
+
+    <string-array name="terslineerpoint">
+        <item>2</item>         <item>4</item>        <item>6</item>        <item>8</item>        <item>10</item>        <item>12</item>
+    </string-array>
+
+    <string-array name="diagonalpoint">
+        <item>3</item>        <item>6</item>        <item>9</item>        <item>12</item>        <item>15</item>        <item>18</item>
+    </string-array>
+
+    <string-array name="helixpoint">
+        <item>4</item>        <item>8</item>        <item>12</item>        <item>16</item>        <item>20</item>        <item>24</item>
+    </string-array>
+
+    <string-array name="minihelixpoint">
+              <item>24</item>
+    </string-array>
+
+    <string-array name="midihelixpoint">
+        <item>24</item>
+    </string-array>
+
+
+
+
+
+
+
+
 </resources>

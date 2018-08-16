@@ -38,7 +38,7 @@ public class CreatePoint extends SQLiteOpenHelper{
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-        db.execSQL("CREATE TABLE  IF NOT EXISTS `points` ( `rowid` INTEGER,`who` TEXT, `game` TEXT, `difficulty` INTEGER, `right` INTEGER, `wrong` INTEGER, `time` TEXT,`sure` INTEGER, `point` INTEGER )");
+        db.execSQL("CREATE TABLE  IF NOT EXISTS `points` ( `rowid` INTEGER PRIMARY KEY AUTOINCREMENT,`who` TEXT, `game` TEXT, `difficulty` INTEGER, `right` INTEGER, `wrong` INTEGER, `time` TEXT,`sure` INTEGER, `point` INTEGER )");
 
     }
 
@@ -75,7 +75,7 @@ public class CreatePoint extends SQLiteOpenHelper{
     }*/
 
     public  void insertDb(SQLiteDatabase db){
-       db.execSQL("INSERT INTO points ( game,difficulty,  point)VALUES ('OYUND',4,80)");
+       db.execSQL("INSERT INTO points ( game,difficulty,  point)VALUES ('OYUNG',3,80)");
 
     }
 }

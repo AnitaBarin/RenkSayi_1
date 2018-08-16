@@ -58,6 +58,14 @@
         <activity
             android:name=".PuanlarAl"
             android:label="@string/title_activity_puanlar_al"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".PuanSave"
+            android:label="@string/title_activity_puan_save"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".PuanSelect"
+            android:label="@string/title_activity_puan_select"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
     </application>
 

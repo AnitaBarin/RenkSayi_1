@@ -10,13 +10,13 @@
         android:id="@+id/grid_item_game"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
         android:layout_weight="1"
         android:gravity="center"
         android:lines="1"
-        android:textSize="35dp"
-        android:layout_gravity="center_vertical"
-        android:background="@drawable/border_list">
-    </TextView>
+        android:textColor="@color/colorFontPoint"
+        android:textSize="30dp"
+        android:textStyle="bold"></TextView>
 
     <TextView
         android:id="@+id/grid_item_difficulty"
@@ -25,10 +25,10 @@
         android:text="@+id/label2"
         android:layout_weight="1"
         android:lines="1"
-        android:textSize="35dp"
+        android:textColor="@color/colorFontPoint"
+        android:textSize="30dp"
         android:gravity="center"
-        android:layout_gravity="center_vertical"
-        android:background="@drawable/border_list">
+        android:layout_gravity="center_vertical">
     </TextView>
 
     <TextView
@@ -36,11 +36,11 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@+id/label3"
-        android:background="@drawable/border_list"
         android:layout_weight="1"
+        android:textColor="@color/colorFontPoint"
         android:gravity="center"
         android:lines="1"
-        android:textSize="35dp"
+        android:textSize="30dp"
         android:layout_gravity="center_vertical">
     </TextView>
 
