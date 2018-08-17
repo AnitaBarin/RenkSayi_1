@@ -78,6 +78,7 @@ public class MainActivity  extends Activity {
     String[] sayilar;
     String[] oyunlarAdi;
     String[] puanTable;
+    String[] puanEkTable;
     String secilenTip, zorlukDeger, secilenDil,secilenIs;
     String oyunlarAdim, zorlukAdim, tipZorlukm;
     String myPlace = "";
@@ -95,7 +96,7 @@ public class MainActivity  extends Activity {
     int tutorialImages[];
     int tutorialSayi;
     private float initialX;
-    String gidenInsSQL;
+    String gidenInsSQL, gidenSaySQL, gidenMinSQL, gidenUpSQL;
 
 
 
@@ -141,7 +142,6 @@ public class MainActivity  extends Activity {
 
 
 
-
         ///////////////-----------------Ingilizce mi Türkçe mi seçimi
 
         langSec();
@@ -149,9 +149,6 @@ public class MainActivity  extends Activity {
         //////////////-----------------tutorial için flipper ve imageları tanımlama--------------
 
        //tutorialAc();
-
-
-
 
         ////////--------------------------genel base layout  tanımlama----------------------
         ///layout tanımlama
@@ -303,16 +300,31 @@ public class MainActivity  extends Activity {
         if (oyunlarAdim.equals("MidiHelix") || oyunlarAdim.equals("MidiHelix")){
             puanTable= this.getResources().getStringArray(R.array.midihelixpoint);
         }
-        puanKazan= Integer.valueOf(puanTable[Integer.valueOf(zorlukDeger)]);
+        puanEkTable=this.getResources().getStringArray(R.array.ektippoint);
+
+
+        /////---------kazanılan puanın hesaplanması
         ///// oyun süresini bulma - tarih ile süre birlikte time lanına yazılıyor.
-        long diff1=(finishTime-startTime)/1000;
+        long diff1=(finishTime-startTime)/1000; //////oyun süresi
+        long diff2= Integer.valueOf((int) Math.pow(2,(Integer.valueOf(zorlukDeger)+2)))-diff1;////////tanımlı süreden oyun süresi çıkınca kalan zaman
+        String ekPuan1= puanEkTable[Integer.valueOf(secilenTip)];//////puan ek tablosundan oyun tipine göre tanımlanan çarpan
+        float ekPuan2=Float.valueOf(ekPuan1);////////alınan çarpan decimal olduğu için float tipine çevirme
+        double ekPuan3=(double) ekPuan2*(int)diff2*((Integer.valueOf(zorlukDeger))+1);//////ek puan çarpanı * kalan süre * seçilen zorluk değeri
+        int ekPuan= (int) Math.round(ekPuan3);
+        puanKazan= Integer.valueOf(puanTable[Integer.valueOf(zorlukDeger)]) + ekPuan;
+
         //////sql oluşturma
         gidenInsSQL="insert into points (who, game,difficulty,right,wrong,time,point)  values ('ben','"+oyunlarAdim+"',"+zorlukDeger+","+rightCount+","+wrongCount+",'"+dateS+"/"+diff1+"',"+puanKazan+")";
+        gidenMinSQL="select rowid,min(point) from points where game='"+oyunlarAdim+"' and difficulty="+zorlukDeger+" group by game, difficulty order by game, difficulty";
+        gidenSaySQL="select count(point)from points where game='"+oyunlarAdim+"' and difficulty="+zorlukDeger+"  group by game, difficulty order by game, difficulty";
+        gidenUpSQL="update points set right="+rightCount+", wrong="+wrongCount+", time='"+dateS+"/"+diff1+"', point="+puanKazan+" where rowid=";
         ///////intent ile gidiş
         intentKayit.putExtra("intentTipi",intentDonus);
         intentKayit.putExtra("insSql",gidenInsSQL);
+        intentKayit.putExtra("saySql",gidenSaySQL);
+        intentKayit.putExtra("minSql",gidenMinSQL);
+        intentKayit.putExtra("upSql",gidenUpSQL);
         startActivityForResult(intentKayit,REQUEST_USER);
-
 
     }
 
@@ -453,6 +465,12 @@ public class MainActivity  extends Activity {
 
         /////////////-------------puanlar kısmından dönüş için----------
         if (intentDonusB.equals("Puan")){
+            isSec(secilenDil);
+
+        }
+
+        /////////////------puan kayıt etmeden dönüş için
+        if (intentDonusB.equals("Save")){
             isSec(secilenDil);
 
         }

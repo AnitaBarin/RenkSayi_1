@@ -46,6 +46,7 @@ public class PuanlarAl extends AppCompatActivity {
     private HashMap<String,puanlar> puanTum;
     ImageView listSumImage;
     String selectTip,selectOyun;
+    int selectZor;
 
 
 
@@ -186,11 +187,13 @@ public class PuanlarAl extends AppCompatActivity {
                 HashMap pointMap = new HashMap<>();
                 pointMap=Items.get(updatePosition);
                 selectOyun= (String) pointMap.get("Game");
+                String  selectZor1=(String) pointMap.get("Difficulty");
+                selectZor=Integer.valueOf(selectZor1);
 
                 //////-----seçilen oyuna ait tüm veri için veri alma hazırlığı
                 selectTip="2";
                 SQLiteDatabase db1 = openOrCreateDatabase(DATABASE_NAME, Context.MODE_PRIVATE, null);
-                puanSQL = "select  game, difficulty, point from points where game='"+selectOyun+"' ";
+                puanSQL = "select  game, difficulty, point from points where game='"+selectOyun+"' and difficulty="+selectZor+"";
 
                 ////////-------yeni liste için ekranı ve listeyi temizleme
                 ViewGroup viewHolder = (ViewGroup)listPuan.getParent();

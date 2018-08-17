@@ -1,5 +1,6 @@
 package com.example.anita.renksayi_1;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -15,38 +16,75 @@ public class PuanSave extends AppCompatActivity {
     private static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "Modpoints.db";
     String insSQL, upSQL,selSQL;
-    String gelen,gelenSQL;
+    String gelen,tipiSorgu, gelenInsSQL, gelenMinSQL,gelenSaySQL,gelenUpSQL, intentDonus;
+    int puanSay,puanRow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        //setContentView(R.layout.activity_main);
 
         /////////////-----------gelen intent bilgisi alma-------------
         Intent intentSave = getIntent();
         gelen = intentSave.getStringExtra("intentTipi");
-        gelenSQL=intentSave.getStringExtra("insSql");
+        gelenInsSQL=intentSave.getStringExtra("insSql");
+        gelenMinSQL=intentSave.getStringExtra("minSql");
+        gelenSaySQL=intentSave.getStringExtra("saySql");
+        gelenUpSQL=intentSave.getStringExtra("upSql");
         SQLiteDatabase db = openOrCreateDatabase(DATABASE_NAME, Context.MODE_PRIVATE, null);
 
-        //insSQL="insert into points (who, game,difficulty,right,wrong,time,point)  values ('ben','oyun',5,8,4,'25',70)";
-        //upSQL="update points set right=5, wrong=2, time='50', point=200 where rowid=2";
-
-        if (gelen.equals("Kayit")){
-            insertDbS(db,gelenSQL);
+      ///////////---- önce kayıt sayısı bulunacak
+        tipiSorgu="Say";
+        selectDbS(db,gelenSaySQL, tipiSorgu);
+        //////----------kayıt sayısı 10 ise minimum puan değeri bulunur ve update edilir.
+        if( puanSay==10){
+            tipiSorgu="Min";
+            selectDbS(db,gelenMinSQL,tipiSorgu);
+            gelenUpSQL=gelenUpSQL+puanRow+"";
+            updateDbS(db,gelenUpSQL);
+        }
+        ////////////------kayıt sayısı 10dan az ise yeni değerler insert edilir.
+        if (puanSay<10){
+            insertDbS(db,gelenInsSQL);
         }
 
     }
+
+
     public  void insertDbS(SQLiteDatabase db, String insSQL){
         db.execSQL(insSQL);
 
     }
-    public  void updateDbS(SQLiteDatabase db){
+    public  void updateDbS(SQLiteDatabase db,String upSQL){
         db.execSQL(upSQL);
 
     }
 
-    public void selectDbS(SQLiteDatabase db) {
+    public void selectDbS(SQLiteDatabase db, String selSQL, String tipSorgu) {
         Cursor cursor = db.rawQuery(selSQL, null);
-    }
+        //////----kayıt sayısı bulunacak ise
+        if (tipSorgu.equals("Say")){
+            while (cursor.moveToNext()){
+            puanSay=cursor.getInt(0);
+            }
+        }
+        //////-------minimum puan bulunacak ise
+        if (tipSorgu.equals("Min")){
+                while (cursor.moveToNext()){
+                    puanRow=cursor.getInt(0);
+                    }
+                }
+        }
 
+    @Override
+    public void onBackPressed() {
+
+        ///////////----------------intent geri dönüş------------
+        Intent intentSaveDonus = new Intent();
+        intentDonus="Save";
+        intentSaveDonus.putExtra("tipDonus", intentDonus);
+        setResult(Activity.RESULT_OK, intentSaveDonus);
+        finish();
+
+    }
 }
