@@ -13,21 +13,30 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 public class IsSec extends AppCompatActivity implements View.OnClickListener {
     ImageButton imageButtonTutor, imageButtonGame, imageButtonPoint;
-    LinearLayout.LayoutParams buttonParam1, buttonParam2, buttonParam3;
+    RelativeLayout.LayoutParams buttonParam1, buttonParam2, buttonParam3;
     int screenHeightI, screenWidthI;
     String gelen;
     String intentTipi;
     String dilSec;
     String isWhat="Oyun";
+    RelativeLayout relativeLayoutIs;
+    RelativeLayout.LayoutParams layoutParamsIsLay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
+
+        relativeLayoutIs=new RelativeLayout(this);
+        layoutParamsIsLay= new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        relativeLayoutIs.setLayoutParams(layoutParamsIsLay);
+        addContentView(relativeLayoutIs,layoutParamsIsLay);
 
         /////////////-----------gelen intent bilgisi alma-------------
         Intent intentIsi = getIntent();
@@ -59,9 +68,19 @@ public class IsSec extends AppCompatActivity implements View.OnClickListener {
         imageButtonPoint.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
         int butWSize = screenWidthI / 4;
         int butHSize = butWSize / 4 * 3;
-        buttonParam1 = new LinearLayout.LayoutParams(butWSize, butHSize);
-        buttonParam2 = new LinearLayout.LayoutParams(butWSize, butHSize);
-        buttonParam3= new LinearLayout.LayoutParams(butWSize,butHSize);
+        buttonParam1 = new RelativeLayout.LayoutParams(butWSize, butHSize);
+        buttonParam2 = new RelativeLayout.LayoutParams(butWSize, butHSize);
+        buttonParam3= new RelativeLayout.LayoutParams(butWSize,butHSize);
+
+        buttonParam1.addRule(RelativeLayout.ALIGN_PARENT_START);
+        buttonParam1.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+
+        buttonParam2.addRule(RelativeLayout.ALIGN_START,imageButtonGame.getId());
+        buttonParam2.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+
+        buttonParam3.addRule(RelativeLayout.ALIGN_PARENT_START);
+        buttonParam3.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+
 
         buttonParam1.leftMargin = screenWidthI / 10;
         buttonParam1.topMargin = screenHeightI / 10;
@@ -72,9 +91,9 @@ public class IsSec extends AppCompatActivity implements View.OnClickListener {
         imageButtonGame.setLayoutParams(buttonParam1);
         imageButtonTutor.setLayoutParams(buttonParam2);
         imageButtonPoint.setLayoutParams(buttonParam3);
-        addContentView(imageButtonGame, buttonParam1);
-        addContentView(imageButtonTutor, buttonParam2);
-        addContentView(imageButtonPoint,buttonParam3);
+        relativeLayoutIs.addView(imageButtonGame, buttonParam1);
+        relativeLayoutIs.addView(imageButtonTutor, buttonParam2);
+        relativeLayoutIs.addView(imageButtonPoint,buttonParam3);
         imageButtonGame.setOnClickListener(this);
         imageButtonTutor.setOnClickListener(this);
         imageButtonPoint.setOnClickListener(this);

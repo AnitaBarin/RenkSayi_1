@@ -43,7 +43,7 @@ import java.util.Calendar;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.logging.Handler;
+import android.os.Handler;
 import java.util.logging.LogRecord;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -97,6 +97,7 @@ public class MainActivity  extends Activity {
     int tutorialSayi;
     private float initialX;
     String gidenInsSQL, gidenSaySQL, gidenMinSQL, gidenUpSQL;
+
 
 
 
@@ -632,7 +633,7 @@ public class MainActivity  extends Activity {
         //////--------------zaman hesaplama için başlangıç zamanı ve geçebilir süre tanımlama
 
 
-        final Handler handler = new Handler() {
+        /*final Handler handler = new Handler() {
             @Override
             public void publish(LogRecord record) {
 
@@ -647,7 +648,7 @@ public class MainActivity  extends Activity {
             public void close() throws SecurityException {
 
             }
-        };
+        };*/
         ///////------------saat tik tak sesi---------------
         mPlayerWork = MediaPlayer.create(MainActivity.this, R.raw.allworking);
         mPlayerWork.start();
@@ -714,6 +715,7 @@ public class MainActivity  extends Activity {
                 if (modum == randomSayi) {
                     rightCount = rightCount + 1;
                     if(rightCount>=(Math.pow((Integer.valueOf(zorlukDeger)+1),2))){
+
                         ///////////------tüm doğrular bulundu ise
                         bittiMi=2;
                         vibe.vibrate(300);
@@ -749,10 +751,15 @@ public class MainActivity  extends Activity {
                         addContentView(gifImageCongrate2, fireworkParams2);addContentView(gifImageCongrate3, fireworkParams3);
                         addContentView(gifImageCongrate4, fireworkParams4);addContentView(gifImageCongrate5, fireworkParams5);
                         finishTime=System.currentTimeMillis();
-                        puanKaydet();
 
+                        ////////---------puan kaydetme işlemini 6 sn erteleme, böylece kutlama efektlerini rahat görüntüleme
+                        final Handler handler1=new Handler();
+                        handler1.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
 
-
+                            }
+                        }, 6000);
                     }
                     else {
                         ////////------------henüz tüm doğrular bulunmadı ise

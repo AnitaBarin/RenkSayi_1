@@ -21,20 +21,27 @@ import android.widget.Toast;
 
 public class LangSec extends AppCompatActivity implements View.OnClickListener{
     ImageButton imageButtonTutor, imageButtonGame, imageButtonTrk, imageButtonEng;
-    LinearLayout.LayoutParams buttonParam1, buttonParam2;
+    RelativeLayout.LayoutParams buttonParam1, buttonParam2;
     int screenHeightL, screenWidthL;
     String gelen;
     String intentTipi;
     String langWhat="Trk";
     RelativeLayout rl;
+    RelativeLayout relativeLayoutLang;
+    RelativeLayout.LayoutParams layoutParamsLangLay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+            this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         rl=new RelativeLayout(this);
         rl= (RelativeLayout)findViewById(R.id.activity_main);
+
+        relativeLayoutLang=new RelativeLayout(this);
+        layoutParamsLangLay= new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        relativeLayoutLang.setLayoutParams(layoutParamsLangLay);
+        addContentView(relativeLayoutLang,layoutParamsLangLay);
 
         /////////////-----------gelen intent bilgisi alma-------------
         Intent intentTut = getIntent();
@@ -57,8 +64,14 @@ public class LangSec extends AppCompatActivity implements View.OnClickListener{
         imageButtonEng.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
         int butWSize = screenWidthL / 4;
         int butHSize = butWSize / 4 * 3;
-        buttonParam1 = new LinearLayout.LayoutParams(butWSize, butHSize);
-        buttonParam2 = new LinearLayout.LayoutParams(butWSize, butHSize);
+        buttonParam1 = new RelativeLayout.LayoutParams(butWSize, butHSize);
+        buttonParam2 = new RelativeLayout.LayoutParams(butWSize, butHSize);
+
+        buttonParam1.addRule(RelativeLayout.ALIGN_PARENT_START);
+        buttonParam1.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+
+        buttonParam2.addRule(RelativeLayout.ALIGN_START,imageButtonTrk.getId());
+        buttonParam2.addRule(RelativeLayout.ALIGN_PARENT_TOP);
 
         buttonParam1.leftMargin = screenWidthL / 10;
         buttonParam1.topMargin = screenHeightL / 10;
@@ -66,8 +79,11 @@ public class LangSec extends AppCompatActivity implements View.OnClickListener{
         buttonParam2.topMargin = screenHeightL - (screenHeightL / 10) - (screenHeightL / 10) - butHSize;
         imageButtonEng.setLayoutParams(buttonParam1);
         imageButtonTrk.setLayoutParams(buttonParam2);
-        addContentView(imageButtonEng, buttonParam1);
-        addContentView(imageButtonTrk, buttonParam2);
+       // addContentView(imageButtonEng, buttonParam1);
+       // addContentView(imageButtonTrk, buttonParam2);
+
+        relativeLayoutLang.addView(imageButtonEng, buttonParam1);
+        relativeLayoutLang.addView(imageButtonTrk, buttonParam2);
         int aaaa = imageButtonEng.getId();
         imageButtonEng.setOnClickListener(this);
         imageButtonTrk.setOnClickListener(this);
