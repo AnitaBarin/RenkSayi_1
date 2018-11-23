@@ -757,6 +757,7 @@ public class MainActivity  extends Activity {
                         handler1.postDelayed(new Runnable() {
                             @Override
                             public void run() {
+                                puanKaydet();
 
                             }
                         }, 6000);
