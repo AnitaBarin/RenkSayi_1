@@ -20,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,6 +30,8 @@ import java.util.HashMap;
 
 public class PuanlarAl extends AppCompatActivity {
 
+    RelativeLayout relativeLayoutPuan;
+    RelativeLayout.LayoutParams layoutParamsPuan;
     private static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "Modpoints.db";
     String gelenler;
@@ -40,7 +43,7 @@ public class PuanlarAl extends AppCompatActivity {
     ArrayList<puanlar> puanDetayAl;
     private static final int REQUEST_USER = 100;
     ListView listPuan;
-    LinearLayout.LayoutParams listParam, imageParam;
+    RelativeLayout.LayoutParams listParam, imageParam;
     private ArrayList<puanlar> puanDetay;
     private ArrayList<puanlar> puanDetay1;
     private HashMap<String,puanlar> puanTum;
@@ -55,6 +58,11 @@ public class PuanlarAl extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
+        relativeLayoutPuan=new RelativeLayout(this);
+        layoutParamsPuan= new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        relativeLayoutPuan.setLayoutParams(layoutParamsPuan);
+        addContentView(relativeLayoutPuan,layoutParamsPuan);
 
 
         /////////---------------------------------dimension alma---------------------------------
@@ -167,16 +175,25 @@ public class PuanlarAl extends AppCompatActivity {
 
 
         ///////------listeyi ekrana ekleme işlemi
-        listParam = new LinearLayout.LayoutParams((screenWidthL*4)/5, (screenHeightL*3)/5);
-        imageParam= new LinearLayout.LayoutParams((screenWidthL*4)/5,(screenHeightL)/6);
+        listParam = new RelativeLayout.LayoutParams((screenWidthL*4)/5, (screenHeightL*3)/5);
+        imageParam= new RelativeLayout.LayoutParams((screenWidthL*4)/5,(screenHeightL)/6);
+
+
+        imageParam.addRule(RelativeLayout.ALIGN_PARENT_START);
+        imageParam.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+
+        listParam.addRule(RelativeLayout.ALIGN_START,listSumImage.getId());
+        listParam.addRule(RelativeLayout.ALIGN_PARENT_TOP);
         listParam.leftMargin = screenWidthL/6;
-        listParam.topMargin = screenHeightL/5;
+        listParam.topMargin =screenHeightL/5;
         imageParam.leftMargin=screenWidthL/6;
         imageParam.topMargin=(screenHeightL/5)-((screenHeightL)/6);
         listPuan.setLayoutParams(listParam);
         listSumImage.setLayoutParams(imageParam);
-        addContentView(listSumImage,imageParam);
-        addContentView(listPuan, listParam);
+        relativeLayoutPuan.addView(listSumImage,imageParam);
+        relativeLayoutPuan.addView(listPuan, listParam);
+      //  addContentView(listSumImage,imageParam);
+      //  addContentView(listPuan, listParam);
 
         ///////////-------listede dokunulan sıradaki oyun tipini alma
         listPuan.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
